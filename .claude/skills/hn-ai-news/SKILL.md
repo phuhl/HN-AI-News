@@ -98,43 +98,47 @@ Discussion (<HN URL>):
 
 End with a `## Key Themes` section (3-5 sentences).
 
-### Output B: HTML file for GitHub Pages
+### Output B: HTML day file + index
 
-Also write a standalone HTML file to `<workspace>/hn-ai-news-<YYYY-MM-DD>.html`. Read the template from `{{SKILL_DIR}}/assets/template.html` and populate it.
+**1. Day file** — write `<workspace>/hn-ai-news-<YYYY-MM-DD>.html`.
 
-Replace these placeholders in the template:
-- `__TITLE__` with `AI News from HN — <readable date>`
-- `__GENERATED_AT__` with the current UTC timestamp
-- `__BODY__` with the HTML body content built as follows
+Read `{{SKILL_DIR}}/assets/template.html` and replace:
+- `__TITLE__` → `AI News from HN — <readable date>` (e.g. `April 16, 2026`)
+- `__GENERATED_AT__` → current UTC timestamp
+- `__BODY__` → HTML built from the structure below
 
-Build the `__BODY__` HTML using this structure:
+The template produces a page that looks like the Hacker News frontpage: orange top bar, tan background, Verdana font, items in a numbered list. Use the following HTML structure for `__BODY__`:
 
 ```html
-<h1>AI News from Hacker News</h1>
-<p class="subtitle"><date> &mdash; <N> AI-relevant posts from <total> total</p>
+<!-- Subtitle line -->
+<p style="font-size:8pt; color:#828282; margin-bottom:4px;">
+  April 16, 2026 &mdash; 20 AI-relevant posts from 137 total
+</p>
 
-<!-- For each category -->
-<h2>Category Name</h2>
+<!-- For each non-empty category -->
+<div class="category-header">Category Name</div>
 
-<!-- For each post in category -->
-<div class="post">
-  <div class="post-header">
-    <span class="post-title">Summary headline</span>
+<!-- For each post, rank counting up from 1 within the page -->
+<div class="item">
+  <div class="item-title-row">
+    <span class="rank">1.</span>
+    <span class="item-title">Summary headline</span>
+    <span class="source-domain">(domain.com)</span>
   </div>
-  <div class="post-meta">
-    <span class="post-original">Original title</span> &mdash; Apr 15, 14:30 UTC
-    &nbsp;
-    <span class="badge badge-pts">281 pts</span>
-    <span class="badge badge-cmt">171 comments</span>
+  <div class="item-meta">
+    <span class="pts">281 points</span>
+    &nbsp;|&nbsp; Apr 15, 14:30 UTC
+    &nbsp;|&nbsp; 171 comments
+    &nbsp;|&nbsp; <span class="orig-title">Original HN title unchanged</span>
   </div>
   <details>
-    <summary>Key points &amp; discussion</summary>
+    <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
       <li>Bullet point 1</li>
       <li>Bullet point 2</li>
       <li>Bullet point 3</li>
     </ul>
-    <div class="discussion-header">
+    <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=...">HN thread</a>
     </div>
     <ul class="discussion-bullets">
@@ -147,7 +151,7 @@ Build the `__BODY__` HTML using this structure:
 
 <!-- Key themes at the end -->
 <div class="themes">
-  <h2>Key Themes</h2>
+  <div class="themes-title">Key Themes</div>
   <ul>
     <li>Theme sentence 1</li>
     <li>Theme sentence 2</li>
@@ -155,19 +159,35 @@ Build the `__BODY__` HTML using this structure:
 </div>
 ```
 
-The `<details>` element makes content collapsed by default — the user clicks to expand. Headlines and metadata are always visible.
+`<details>` is collapsed by default — clicking `summary` expands it. Headlines and metadata are always visible. Escape `<`, `>`, `&` in any titles or content. No `<script>` tags.
 
-Escape any `<`, `>`, `&` in titles/content for valid HTML. Do not include any `<script>` tags.
+**2. Index file** — after writing the day file, regenerate `<workspace>/index.html`.
 
-After writing the HTML file, commit it to git so GitHub Pages picks up the update automatically:
+List all `hn-ai-news-YYYY-MM-DD.html` files that exist in the workspace, sort them newest-first, then write `index.html` using `{{SKILL_DIR}}/assets/index-template.html`.
+
+Replace in the index template:
+- `__GENERATED_AT__` → current UTC timestamp
+- `__ENTRIES__` → one `.entry` div per file, newest at top:
+
+```html
+<div class="entry">
+  <span class="entry-rank">1.</span>
+  <a class="entry-link" href="hn-ai-news-2026-04-16.html">AI News — April 16, 2026</a>
+  <span class="entry-meta">N posts</span>
+</div>
+```
+
+Include the post count for each day in `entry-meta` if you know it (you do for the day you just generated; for older files you can omit or leave blank).
+
+**3. Commit** — after writing both files:
 
 ```bash
 cd <workspace>
-git add hn-ai-news-<YYYY-MM-DD>.html
+git add hn-ai-news-<YYYY-MM-DD>.html index.html
 git commit -m "Add AI news digest for <YYYY-MM-DD>"
 ```
 
-If there's also an `index.html` that needs updating (e.g., a listing page that links to daily digests), update and commit that too. Push to the remote only if the user explicitly asks.
+Push only if the user explicitly asks.
 
 ## Formatting rules
 

@@ -5,172 +5,204 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>__TITLE__</title>
 <style>
-  :root {
-    --bg: #0d1117;
-    --surface: #161b22;
-    --border: #30363d;
-    --text: #e6edf3;
-    --text-muted: #8b949e;
-    --accent: #58a6ff;
-    --accent-dim: #1f6feb33;
-    --green: #3fb950;
-    --orange: #d29922;
-    --red: #f85149;
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    padding: 2rem;
-    max-width: 900px;
-    margin: 0 auto;
+    font-family: Verdana, Geneva, sans-serif;
+    font-size: 10pt;
+    background-color: #f6f6ef;
+    color: #000;
   }
-  h1 {
-    font-size: 1.8rem;
-    margin-bottom: 0.25rem;
-    color: var(--text);
-  }
-  .subtitle {
-    color: var(--text-muted);
-    font-size: 0.95rem;
-    margin-bottom: 2rem;
-  }
-  h2 {
-    font-size: 1.3rem;
-    color: var(--accent);
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .post {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1rem;
-  }
-  .post-header {
+
+  /* ── Top bar ─────────────────────────────────────────── */
+  #hnbar {
+    background-color: #ff6600;
+    padding: 2px 6px;
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.5rem;
-    margin-bottom: 0.25rem;
+    align-items: center;
+    gap: 6px;
+    line-height: 18px;
   }
-  .post-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .post-original {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-  }
-  .post-meta {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-  }
-  .badge {
+  #hnbar .logo {
     display: inline-block;
-    font-size: 0.75rem;
-    padding: 0.1rem 0.45rem;
-    border-radius: 4px;
-    font-weight: 600;
+    background: white;
+    color: #ff6600;
+    font-weight: bold;
+    font-size: 11pt;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+    border: 1px solid #ff6600;
+    flex-shrink: 0;
+    text-decoration: none;
   }
-  .badge-pts {
-    background: var(--accent-dim);
-    color: var(--accent);
+  #hnbar .sitename {
+    color: white;
+    font-weight: bold;
+    font-size: 10pt;
+    text-decoration: none;
   }
-  .badge-cmt {
-    background: #30363d;
-    color: var(--text-muted);
+  #hnbar .pagetitle {
+    color: white;
+    font-size: 10pt;
   }
+  #hnbar .sep { color: rgba(255,255,255,0.6); }
+
+  /* ── Content area ────────────────────────────────────── */
+  #wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 8px 12px 24px;
+  }
+
+  /* ── Category headers ────────────────────────────────── */
+  .category-header {
+    background-color: #ff6600;
+    color: white;
+    font-size: 8pt;
+    font-weight: bold;
+    padding: 2px 6px;
+    margin-top: 18px;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Post rows ───────────────────────────────────────── */
+  .item {
+    padding: 5px 0 3px 0;
+    border-bottom: 1px solid #e8e8e0;
+  }
+
+  .item-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+  .rank {
+    color: #828282;
+    font-size: 8.5pt;
+    min-width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .item-title {
+    font-size: 10pt;
+    color: #000;
+  }
+  .source-domain {
+    font-size: 7.5pt;
+    color: #828282;
+  }
+
+  .item-meta {
+    padding-left: 28px;
+    font-size: 7pt;
+    color: #828282;
+    margin-top: 1px;
+  }
+  .item-meta .pts { font-weight: bold; color: #555; }
+  .item-meta .orig-title {
+    font-style: italic;
+    color: #999;
+  }
+
+  /* ── Collapsible details ─────────────────────────────── */
   details {
-    margin-top: 0.5rem;
+    padding-left: 28px;
+    margin-top: 3px;
   }
   summary {
     cursor: pointer;
-    font-size: 0.85rem;
-    color: var(--accent);
-    font-weight: 500;
-    padding: 0.3rem 0;
+    font-size: 7.5pt;
+    color: #ff6600;
     user-select: none;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
   }
-  summary:hover {
-    text-decoration: underline;
-  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "▶"; font-size: 6pt; }
+  details[open] > summary::before { content: "▼"; }
+  summary:hover { text-decoration: underline; }
+
   .content-bullets {
-    margin: 0.5rem 0 0.5rem 1.25rem;
-    font-size: 0.9rem;
+    margin: 5px 0 5px 14px;
+    font-size: 9pt;
+    color: #333;
+    line-height: 1.5;
   }
-  .content-bullets li {
-    margin-bottom: 0.35rem;
-    color: var(--text);
+  .content-bullets li { margin-bottom: 3px; }
+
+  .disc-header {
+    font-size: 7.5pt;
+    color: #828282;
+    margin-top: 8px;
   }
-  .discussion-header {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-top: 0.75rem;
-    margin-bottom: 0.25rem;
-  }
-  .discussion-header a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-  .discussion-header a:hover {
-    text-decoration: underline;
-  }
+  .disc-header a { color: #ff6600; text-decoration: none; }
+  .disc-header a:hover { text-decoration: underline; }
+
   .discussion-bullets {
-    margin: 0.25rem 0 0 1.25rem;
-    font-size: 0.88rem;
+    margin: 4px 0 6px 14px;
+    font-size: 8.5pt;
+    color: #666;
+    line-height: 1.5;
   }
-  .discussion-bullets li {
-    margin-bottom: 0.3rem;
-    color: var(--text-muted);
-  }
+  .discussion-bullets li { margin-bottom: 3px; }
+
+  /* ── Key Themes ──────────────────────────────────────── */
   .themes {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.25rem;
-    margin-top: 2rem;
+    margin-top: 22px;
+    border: 1px solid #e0e0d8;
+    background: #fffdf5;
+    padding: 10px 14px;
   }
-  .themes h2 {
-    margin-top: 0;
-    border: none;
-    padding: 0;
-    margin-bottom: 0.75rem;
+  .themes-title {
+    font-size: 8pt;
+    font-weight: bold;
+    color: #ff6600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 7px;
   }
-  .themes li {
-    margin-bottom: 0.4rem;
-    margin-left: 1.25rem;
-    font-size: 0.95rem;
+  .themes ul {
+    margin-left: 14px;
+    font-size: 9pt;
+    color: #333;
+    line-height: 1.5;
   }
-  .generated {
+  .themes li { margin-bottom: 4px; }
+
+  /* ── Footer ──────────────────────────────────────────── */
+  #footer {
     text-align: center;
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    margin-top: 2rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-  }
-  @media (max-width: 600px) {
-    body { padding: 1rem; }
-    h1 { font-size: 1.4rem; }
-    .post { padding: 0.75rem 1rem; }
+    color: #828282;
+    font-size: 7.5pt;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0d8;
   }
 </style>
 </head>
 <body>
 
+<div id="hnbar">
+  <a class="logo" href="index.html">Y</a>
+  <a class="sitename" href="index.html">AI HN Digest</a>
+  <span class="sep">|</span>
+  <span class="pagetitle">__TITLE__</span>
+</div>
+
+<div id="wrap">
+
 __BODY__
 
-<div class="generated">
+<div id="footer">
   Generated with Claude Code &mdash; __GENERATED_AT__
 </div>
 
+</div>
 </body>
 </html>
