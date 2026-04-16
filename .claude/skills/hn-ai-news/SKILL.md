@@ -159,7 +159,15 @@ The `<details>` element makes content collapsed by default — the user clicks t
 
 Escape any `<`, `>`, `&` in titles/content for valid HTML. Do not include any `<script>` tags.
 
-After writing, tell the user where the file is saved so they can serve it or push to GitHub Pages.
+After writing the HTML file, commit it to git so GitHub Pages picks up the update automatically:
+
+```bash
+cd <workspace>
+git add hn-ai-news-<YYYY-MM-DD>.html
+git commit -m "Add AI news digest for <YYYY-MM-DD>"
+```
+
+If there's also an `index.html` that needs updating (e.g., a listing page that links to daily digests), update and commit that too. Push to the remote only if the user explicitly asks.
 
 ## Formatting rules
 
