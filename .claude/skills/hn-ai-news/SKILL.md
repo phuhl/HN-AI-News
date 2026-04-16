@@ -135,14 +135,14 @@ The template produces a page that looks like the Hacker News frontpage: orange t
 <!-- For each post — no rank number, everything left-aligned -->
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://source-url.com/article">Summary headline</a>
+    <a class="item-title" href="https://source-url.com/article">Original HN title, unchanged</a>
     <span class="source-domain">(domain.com)</span>
   </div>
-  <div class="item-orig-title">Original HN title, unchanged</div>
+  <div class="item-orig-title">Summary headline</div>
   <div class="item-meta">
     <span class="pts">281 points</span>
     &nbsp;|&nbsp; Apr 15, 14:30 UTC
-    &nbsp;|&nbsp; 171 comments
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=...">171 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>

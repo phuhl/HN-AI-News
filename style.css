@@ -118,6 +118,13 @@ a.item-title:hover {
   font-weight: bold;
   color: #555;
 }
+.item-meta a.comments-link {
+  color: #828282;
+  text-decoration: none;
+}
+.item-meta a.comments-link:hover {
+  text-decoration: underline;
+}
 
 /* ── Collapsible details ──────────────────────────────── */
 details {
