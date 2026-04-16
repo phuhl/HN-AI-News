@@ -100,6 +100,12 @@ End with a `## Key Themes` section (3-5 sentences).
 
 ### Output B: HTML day file + index
 
+**0. Shared stylesheet** — copy `{{SKILL_DIR}}/assets/style.css` to `<workspace>/style.css` (overwrite — this ensures the latest styles are always in sync):
+
+```bash
+cp {{SKILL_DIR}}/assets/style.css <workspace>/style.css
+```
+
 **1. Day file** — write `<workspace>/hn-ai-news-<YYYY-MM-DD>.html`.
 
 Read `{{SKILL_DIR}}/assets/template.html` and replace:
