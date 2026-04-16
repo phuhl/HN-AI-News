@@ -1,28 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>__TITLE__</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>__TITLE__</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="hnbar">
+      <a class="logo" href="index.html">Y</a>
+      <a class="sitename" href="index.html">AI HN Digest</a>
+      <span class="sep">|</span>
+      <span class="pagetitle">__TITLE__</span>
+      <a class="today-link" id="today-link" href="#">today</a>
+    </div>
+    <script>
+      (function () {
+        var d = new Date();
+        var file =
+          "hn-ai-news-" +
+          d.getFullYear() +
+          "-" +
+          String(d.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(d.getDate()).padStart(2, "0") +
+          ".html";
+        if (window.location.pathname.split("/").pop() !== file) {
+          var el = document.getElementById("today-link");
+          el.href = file;
+          el.style.display = "inline";
+        }
+      })();
+    </script>
 
-<div id="hnbar">
-  <a class="logo" href="index.html">Y</a>
-  <a class="sitename" href="index.html">AI HN Digest</a>
-  <span class="sep">|</span>
-  <span class="pagetitle">__TITLE__</span>
-</div>
-
-<div id="wrap">
-
-__BODY__
-
-<div id="footer">
-  Generated with Claude Code &mdash; __GENERATED_AT__
-</div>
-
-</div>
-</body>
+    <div id="wrap">__BODY__</div>
+  </body>
 </html>

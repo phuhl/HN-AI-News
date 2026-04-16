@@ -124,18 +124,17 @@ The template produces a page that looks like the Hacker News frontpage: orange t
 <!-- For each non-empty category -->
 <div class="category-header">Category Name</div>
 
-<!-- For each post, rank counting up from 1 within the page -->
+<!-- For each post — no rank number, everything left-aligned -->
 <div class="item">
   <div class="item-title-row">
-    <span class="rank">1.</span>
-    <span class="item-title">Summary headline</span>
+    <a class="item-title" href="https://source-url.com/article">Summary headline</a>
     <span class="source-domain">(domain.com)</span>
   </div>
+  <div class="item-orig-title">Original HN title, unchanged</div>
   <div class="item-meta">
     <span class="pts">281 points</span>
     &nbsp;|&nbsp; Apr 15, 14:30 UTC
     &nbsp;|&nbsp; 171 comments
-    &nbsp;|&nbsp; <span class="orig-title">Original HN title unchanged</span>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
