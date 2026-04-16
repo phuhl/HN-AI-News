@@ -110,7 +110,6 @@ cp {{SKILL_DIR}}/assets/style.css <workspace>/style.css
 
 Read `{{SKILL_DIR}}/assets/template.html` and replace:
 - `__TITLE__` → `AI News from HN — <readable date>` (e.g. `April 16, 2026`)
-- `__GENERATED_AT__` → current UTC timestamp
 - `__BODY__` → HTML built from the structure below
 
 The template produces a page that looks like the Hacker News frontpage: orange top bar, tan background, Verdana font, items in a numbered list. Use the following HTML structure for `__BODY__`:
@@ -171,7 +170,6 @@ The template produces a page that looks like the Hacker News frontpage: orange t
 List all `hn-ai-news-YYYY-MM-DD.html` files that exist in the workspace, sort them newest-first, then write `index.html` using `{{SKILL_DIR}}/assets/index-template.html`.
 
 Replace in the index template:
-- `__GENERATED_AT__` → current UTC timestamp
 - `__ENTRIES__` → one `.entry` div per file, newest at top:
 
 ```html
