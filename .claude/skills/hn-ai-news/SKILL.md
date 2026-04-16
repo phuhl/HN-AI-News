@@ -121,6 +121,15 @@ The template produces a page that looks like the Hacker News frontpage: orange t
   April 16, 2026 &mdash; 20 AI-relevant posts from 137 total
 </p>
 
+<!-- Key themes at the TOP, before the post list -->
+<div class="themes">
+  <div class="themes-title">Key Themes</div>
+  <ul>
+    <li>Theme sentence 1</li>
+    <li>Theme sentence 2</li>
+  </ul>
+</div>
+
 <!-- For each non-empty category -->
 <div class="category-header">Category Name</div>
 
@@ -152,15 +161,6 @@ The template produces a page that looks like the Hacker News frontpage: orange t
       <li>Discussion point 3</li>
     </ul>
   </details>
-</div>
-
-<!-- Key themes at the end -->
-<div class="themes">
-  <div class="themes-title">Key Themes</div>
-  <ul>
-    <li>Theme sentence 1</li>
-    <li>Theme sentence 2</li>
-  </ul>
 </div>
 ```
 
