@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI News from HN — April 17, 2026</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="hnbar">
+      <a class="logo" href="index.html">Y</a>
+      <a class="sitename" href="index.html">AI HN Digest</a>
+      <span class="sep">|</span>
+      <span class="pagetitle">AI News from HN — April 17, 2026</span>
+      <a class="today-link" id="today-link" href="#">today</a>
+    </div>
+    <script>
+      (function () {
+        var d = new Date();
+        var file =
+          "hn-ai-news-" +
+          d.getFullYear() +
+          "-" +
+          String(d.getMonth() + 1).padStart(2, "0") +
+          "-" +
+          String(d.getDate()).padStart(2, "0") +
+          ".html";
+        if (window.location.pathname.split("/").pop() !== file) {
+          var el = document.getElementById("today-link");
+          el.href = file;
+          el.style.display = "inline";
+        }
+      })();
+    </script>
+
+    <div id="wrap"><p style="font-size:8pt; color:#828282; margin-bottom:4px;">April 17, 2026 &mdash; 29 AI-relevant posts from 110 total</p>
+<div class="themes">
+<div class="themes-title">Key Themes</div>
+<ul>
+  <li>Claude Opus 4.7 dominated discussion, with users noting it burns more tokens and plans more verbosely than 4.6, while the model card revealed a significant long-context recall regression (91.9% → 59.2%) traded for coding improvements.</li>
+  <li>Open-weight models are closing the gap: Qwen3.6-35B-A3B running on a laptop produced better image generations than Opus 4.7 on at least one benchmark, signaling the frontier is increasingly accessible locally.</li>
+  <li>AI agents are moving into the physical and economic world — a startup handed a retail store lease to an AI agent, Codex autonomously reverse-engineered a Samsung TV, and a DIY arm used Claude to test circuit boards, all without domain-specific training.</li>
+  <li>Infrastructure and tooling are maturing fast, with Cloudflare launching both an agent-native inference platform and Git-compatible artifact storage in the same day, while the llama.cpp ecosystem challenges Ollama&#x27;s dominance in local inference.</li>
+  <li>AI fatigue and friction are surfacing as real concerns: long agent sessions degrade in quality after ~4 hours, SDL banned AI-written commits, studies link heavy AI use to cognitive atrophy, and Sal Khan admitted KhanMigo&#x27;s revolution is behind schedule.</li>
+</ul>
+</div>
+<div class="category-header">Claude / Anthropic</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://www.anthropic.com/news/claude-opus-4-7">Claude Opus 4.7</a>
+    <span class="source-domain">(anthropic.com)</span>
+  </div>
+  <div class="item-orig-title">Anthropic releases Claude Opus 4.7 with expanded agentic capabilities</div>
+  <div class="item-meta">
+    <span class="pts">1650 points</span>
+    &nbsp;|&nbsp; Apr 16, 14:23 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47793411">1168 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Opus 4.7 focuses on agentic workflows: improved tool use, multi-step planning, and autonomous execution.</li>
+      <li>Benchmarks show strongest gains on SWE-bench and agentic coding tasks versus Opus 4.6.</li>
+      <li>Released alongside a detailed model card and simultaneous discussion on HN.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47793411">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Multiple users report Opus 4.7 burns significantly more tokens than 4.6 with no clear quality improvement.</li>
+      <li>Rate limits are exhausting faster; the model &#x27;overplans&#x27; unless closely steered.</li>
+      <li>Some users see improvements on specific coding tasks but not in general-purpose conversations.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://anthropic.com/claude-opus-4-7-system-card">Claude Opus 4.7 Model Card</a>
+    <span class="source-domain">(anthropic.com)</span>
+  </div>
+  <div class="item-orig-title">Claude Opus 4.7 model card reveals trade-off: better coding, worse long-context recall</div>
+  <div class="item-meta">
+    <span class="pts">168 points</span>
+    &nbsp;|&nbsp; Apr 16, 14:32 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47793546">79 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Model card reveals long-context retrieval dropped from 91.9% (Opus 4.6) to 59.2% (Opus 4.7).</li>
+      <li>Improvement in software engineering benchmarks was achieved by trading off long-context recall.</li>
+      <li>Anthropic disclosed the degradation explicitly, prompting debate about benchmark honesty.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47793546">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Commenters stunned by the long-context recall drop: 91.9% → 59.2% is a severe regression for retrieval tasks.</li>
+      <li>One commenter suggests the published Opus 4.6 score was itself inflated and 4.7 is more honest.</li>
+      <li>Debate about whether trading long-context for coding performance is the right prioritization.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://github.com/AgentSeal/codeburn">Show HN: CodeBurn – Analyze Claude Code token usage by task</a>
+    <span class="source-domain">(github.com)</span>
+  </div>
+  <div class="item-orig-title">CodeBurn: new tool tracks Claude Code token spend per task</div>
+  <div class="item-meta">
+    <span class="pts">88 points</span>
+    &nbsp;|&nbsp; Apr 13, 22:57 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47759035">19 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Open-source CLI tool parses Claude Code session logs to surface token usage per task.</li>
+      <li>Provides an interactive terminal UI (built with Ink/React) showing cost breakdown by activity.</li>
+      <li>Useful for developers trying to understand where AI coding sessions consume the most budget.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47759035">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Users find the activity categorization sometimes inaccurate — planning sessions not counted correctly.</li>
+      <li>Meta-question emerged: how much did it cost in Claude Code tokens to build CodeBurn itself?</li>
+      <li>Positive reception overall; fills a real gap in Claude Code&#x27;s native observability.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://lucasgerads.com/blog/lecroy-mcp-spice-demo/">Show HN: SPICE simulation → oscilloscope → verification with Claude Code</a>
+    <span class="source-domain">(lucasgerads.com)</span>
+  </div>
+  <div class="item-orig-title">Hardware TDD: Claude Code automates SPICE simulation → oscilloscope verification loop</div>
+  <div class="item-meta">
+    <span class="pts">60 points</span>
+    &nbsp;|&nbsp; Apr 17, 00:37 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47801255">13 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Demo integrates LeCroy oscilloscope with a SPICE simulator via Claude Code&#x27;s MCP loop.</li>
+      <li>Claude autonomously runs simulations, measures real hardware, and flags discrepancies.</li>
+      <li>Described by commenters as TDD for hardware: simulation is the spec, scope is the test runner.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47801255">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Described as &#x27;TDD for hardware&#x27; — a compelling framing that resonated with commenters.</li>
+      <li>Caution: one commenter reports Claude hallucinated board capabilities in a similar project.</li>
+      <li>Educators see potential for teaching electronics with AI-driven simulation verification.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">Open Source AI</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://qwen.ai/blog?id=qwen3.6-35b-a3b">Qwen3.6-35B-A3B: Agentic coding power, now open to all</a>
+    <span class="source-domain">(qwen.ai)</span>
+  </div>
+  <div class="item-orig-title">Qwen3.6-35B-A3B launches as open-weight agentic coding powerhouse</div>
+  <div class="item-meta">
+    <span class="pts">1019 points</span>
+    &nbsp;|&nbsp; Apr 16, 13:36 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47792764">447 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Qwen3.6-35B-A3B is a 35B MoE model (3B active parameters) optimized for agentic coding.</li>
+      <li>Available as open weights; runs on consumer hardware — a 20.9 GB GGUF fits on many laptops.</li>
+      <li>Benchmarks show competitive performance with frontier models on coding and reasoning tasks.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47792764">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Simon Willison running the model locally drew a better pelican riding a bicycle than Opus 4.7 — sparked a separate HN post.</li>
+      <li>Community benchmarking is rapid: multiple users posted real-world comparisons within hours of release.</li>
+      <li>Strong interest in GGUF quantization options; Unsloth&#x27;s 20.9GB version is the most-cited.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://simonwillison.net/2026/Apr/16/qwen-beats-opus/">Qwen3.6-35B-A3B on my laptop drew me a better pelican than Claude Opus 4.7</a>
+    <span class="source-domain">(simonwillison.net)</span>
+  </div>
+  <div class="item-orig-title">Simon Willison: Qwen3.6 on a laptop beats Claude Opus 4.7 at image generation</div>
+  <div class="item-meta">
+    <span class="pts">371 points</span>
+    &nbsp;|&nbsp; Apr 16, 17:37 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47796830">77 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Simon Willison ran both models on identical prompts; found Qwen3.6 produced more creative, detailed images.</li>
+      <li>HN discussion divided: some favor Opus for physical accuracy, others prefer Qwen for artistic quality.</li>
+      <li>Demonstrates that a local open-weight model can now rival top cloud models on certain creative tasks.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47796830">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Debate over what &#x27;better&#x27; means: physical accuracy (Opus wins) vs. artistic creativity (Qwen wins).</li>
+      <li>Consensus: for image generation prompts, subjective quality is genuinely hard to benchmark.</li>
+      <li>Several users replicated the test independently, getting varied results based on prompt and sampler settings.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">OpenAI / ChatGPT</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://openai.com/index/codex-for-almost-everything/">Codex for almost everything</a>
+    <span class="source-domain">(openai.com)</span>
+  </div>
+  <div class="item-orig-title">OpenAI expands Codex to general task automation beyond coding</div>
+  <div class="item-meta">
+    <span class="pts">802 points</span>
+    &nbsp;|&nbsp; Apr 16, 17:12 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47796469">402 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Codex is now positioned as a general-purpose agentic worker, not just a coding tool.</li>
+      <li>OpenAI describes use cases spanning research, writing, data analysis, and task automation.</li>
+      <li>Discussion: commenters see this as a major shift toward AI &#x27;professional agents&#x27; for non-technical users.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47796469">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Commenters see professional agent categories (Cowork/Codex) as a transformative product category.</li>
+      <li>Major concern: granting agents full computer access is likely inevitable but creates serious security risks.</li>
+      <li>Some predict mandatory platform-level constraints will follow, limiting user freedom.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://blog.calif.io/p/codex-hacked-a-samsung-tv">Codex Hacked a Samsung TV</a>
+    <span class="source-domain">(blog.calif.io)</span>
+  </div>
+  <div class="item-orig-title">OpenAI Codex autonomously reverse-engineers and hacks a Samsung TV</div>
+  <div class="item-meta">
+    <span class="pts">234 points</span>
+    &nbsp;|&nbsp; Apr 16, 10:44 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47791212">125 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>A developer used Codex to reverse-engineer a Samsung TV&#x27;s internal APIs and access hidden features.</li>
+      <li>No prior knowledge of the TV&#x27;s software was needed; Codex discovered endpoints and parameters autonomously.</li>
+      <li>Commenters shared similar successful sessions with routers and other embedded devices.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47791212">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Codex required no prior reverse engineering knowledge — it discovered the TV&#x27;s internal API from scratch.</li>
+      <li>Others shared successful Codex hacking sessions on routers and embedded systems.</li>
+      <li>General amazement at autonomous capability, mixed with concern about what this means for device security.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://openai.com/index/introducing-gpt-rosalind/">GPT‑Rosalind for life sciences research</a>
+    <span class="source-domain">(openai.com)</span>
+  </div>
+  <div class="item-orig-title">OpenAI launches GPT-Rosalind, a specialized GPT-5.4 for life sciences</div>
+  <div class="item-meta">
+    <span class="pts">88 points</span>
+    &nbsp;|&nbsp; Apr 16, 19:24 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47798244">22 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>GPT-Rosalind is a fine-tuned GPT-5.4 variant purpose-built for biological and life sciences research.</li>
+      <li>Evaluated against BixBench; OpenAI omitted comparisons with Anthropic models and GPT-5.4 Pro.</li>
+      <li>Commenters note the selective benchmarking raises questions about the claims.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47798244">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Commenters immediately noticed OpenAI omitted GPT-5.4 Pro and all Anthropic models from comparisons.</li>
+      <li>BixBench as a benchmark is praised conceptually but lacks a public leaderboard.</li>
+      <li>Life sciences community cautiously interested but wants independent validation of the claims.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">AI Infrastructure &amp; Compute</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://sleepingrobots.com/dreams/stop-using-ollama/">The local LLM ecosystem doesn’t need Ollama</a>
+    <span class="source-domain">(sleepingrobots.com)</span>
+  </div>
+  <div class="item-orig-title">llama.cpp and friends have matured — the case against defaulting to Ollama</div>
+  <div class="item-meta">
+    <span class="pts">617 points</span>
+    &nbsp;|&nbsp; Apr 16, 03:35 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47788385">203 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>llama.cpp now ships with a GUI, HTTP server, and model-pulling — matching most of Ollama&#x27;s convenience.</li>
+      <li>Author argues Ollama adds an unnecessary abstraction layer with its own performance overhead.</li>
+      <li>Commenters mostly agree on the technical points but credit Ollama for making local LLMs accessible.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47788385">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Users mostly agree llama.cpp has matured significantly, but credit Ollama for onboarding newcomers.</li>
+      <li>One commenter notes the article itself used llama.cpp to test its claims — meta validation.</li>
+      <li>The debate ultimately comes down to UX polish vs. performance and control.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://darkbloom.dev">Darkbloom – Private inference on idle Macs</a>
+    <span class="source-domain">(darkbloom.dev)</span>
+  </div>
+  <div class="item-orig-title">Darkbloom turns idle Macs into private AI inference nodes with revenue sharing</div>
+  <div class="item-meta">
+    <span class="pts">479 points</span>
+    &nbsp;|&nbsp; Apr 16, 04:06 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47788542">237 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Darkbloom pays Mac owners for idle inference capacity, claiming payoff in 2–4 months for a Mac mini.</li>
+      <li>Inference runs locally and privately — the service positions itself as a privacy-preserving alternative.</li>
+      <li>Top commenters skeptical: if ROI is that good, why not just buy more Macs yourself?</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47788542">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Founder confirms ROI numbers are based on 100% utilization — a best-case scenario not yet achieved.</li>
+      <li>Key counter: if the economics work, why not just buy Macs yourself? Founder&#x27;s answer: demand uncertainty.</li>
+      <li>Privacy-first framing is the differentiator from cloud inference; some find it compelling.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://blog.cloudflare.com/ai-platform/">Cloudflare&#x27;s AI Platform: an inference layer designed for agents</a>
+    <span class="source-domain">(blog.cloudflare.com)</span>
+  </div>
+  <div class="item-orig-title">Cloudflare launches AI Platform: unified inference layer with agent-native routing</div>
+  <div class="item-meta">
+    <span class="pts">266 points</span>
+    &nbsp;|&nbsp; Apr 16, 13:17 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47792538">60 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Cloudflare AI Platform provides a single endpoint routing to multiple models with agent-aware context.</li>
+      <li>Integrates with Cloudflare&#x27;s network for low-latency routing and includes session/memory tooling.</li>
+      <li>Commenters describe it as OpenRouter with Cloudflare Argo networking; some see it as incremental.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47792538">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Framed by one commenter as &#x27;OpenRouter with Cloudflare Argo networking.&#x27;</li>
+      <li>Discussion of what Cloudflare could do with its Replicate acquisition instead.</li>
+      <li>Limited discussion on what makes it genuinely differentiated from existing inference aggregators.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://blog.cloudflare.com/artifacts-git-for-agents-beta/">Artifacts: Versioned storage that speaks Git</a>
+    <span class="source-domain">(blog.cloudflare.com)</span>
+  </div>
+  <div class="item-orig-title">Cloudflare Artifacts: Git-compatible versioned storage designed for AI agents</div>
+  <div class="item-meta">
+    <span class="pts">185 points</span>
+    &nbsp;|&nbsp; Apr 16, 13:02 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47792374">20 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Cloudflare Artifacts is a new storage primitive that uses Git semantics (refs, blobs, commits) for AI outputs.</li>
+      <li>ArtifactFS can mount a blobless git clone as a filesystem, making AI-generated state versioned and diffable.</li>
+      <li>Priced 30× higher than S3 per operation — batching will be critical for cost efficiency.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47792374">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>ArtifactFS — mounting a blobless git clone as a filesystem — described as elegant and immediately useful.</li>
+      <li>Cost compared unfavorably to S3 (30× higher per operation); batching will be essential.</li>
+      <li>Community excited about Git semantics for AI-generated artifacts as a versioning primitive.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">Google / DeepMind</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://discuss.ai.google.dev/t/unexpected-54k-billing-spike-in-13-hours-firebase-browser-key-without-api-restrictions-used-for-gemini-requests/140262">€54k spike in 13h from unrestricted Firebase browser key accessing Gemini APIs</a>
+    <span class="source-domain">(discuss.ai.google.dev)</span>
+  </div>
+  <div class="item-orig-title">Unrestricted Firebase key exposes Gemini APIs, costing developer €54k in 13 hours</div>
+  <div class="item-meta">
+    <span class="pts">383 points</span>
+    &nbsp;|&nbsp; Apr 16, 12:13 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47791871">278 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Developer left a Firebase browser API key unrestricted; a bot discovered it and ran Gemini API calls.</li>
+      <li>Budget alerts fired with hours-long delay; by the time they responded, charges had reached €28k.</li>
+      <li>Google Gemini API now has spend caps (up to 10-minute processing delay) — but they were not set here.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47791871">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Budget alert fired but with hours of delay — by response time €28k was already incurred.</li>
+      <li>Google Gemini now has spend caps but they are not enabled by default and have ~10-minute delays.</li>
+      <li>Strong consensus: all cloud AI keys must have restrictions and spend caps configured on day one.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://android-developers.googleblog.com/2026/04/build-android-apps-3x-faster-using-any-agent.html">Android CLI: Build Android apps 3x faster using any agent</a>
+    <span class="source-domain">(android-developers.googleblog.com)</span>
+  </div>
+  <div class="item-orig-title">Google launches Android CLI to let AI agents build Android apps 3× faster</div>
+  <div class="item-meta">
+    <span class="pts">195 points</span>
+    &nbsp;|&nbsp; Apr 16, 18:39 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47797665">67 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Google releases an Android CLI tool that exposes Android build and device operations as agent-callable skills.</li>
+      <li>Designed to let any AI coding agent (Claude, Gemini, Copilot) drive Android app development.</li>
+      <li>Early commenters note broken install URLs for Windows and familiar frustrations with Google tooling.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47797665">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Windows install URL is broken (404) on launch day.</li>
+      <li>Commenters note Google Android tooling has always been rough around the edges.</li>
+      <li>The concept — exposing build/device ops as agent skills — is well-received despite the rough launch.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">AI Agents &amp; Automation</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://andonlabs.com/blog/andon-market-launch">We gave an AI a 3 year retail lease and asked it to make a profit</a>
+    <span class="source-domain">(andonlabs.com)</span>
+  </div>
+  <div class="item-orig-title">Startup signs 3-year retail lease and turns the store over to an AI agent to run</div>
+  <div class="item-meta">
+    <span class="pts">191 points</span>
+    &nbsp;|&nbsp; Apr 16, 15:13 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47794391">262 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Andon Labs handed a fully leased physical retail space to an AI agent for three years to see if it profits.</li>
+      <li>The agent manages inventory, pricing, and operations; humans only intervene for physical stocking.</li>
+      <li>Framed as an experiment to understand AI&#x27;s near-term retail capabilities, not a commercial venture.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47794391">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Commenters skeptical of the &#x27;we don&#x27;t want this to be the future&#x27; framing while actively building it.</li>
+      <li>Philosophical debate: is building something you think is inevitable the same as endorsing it?</li>
+      <li>Some see this as valuable data; others see it as accelerationism wrapped in disclaimers.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://blowmage.com/2026/04/14/arguing-with-agents/">Arguing with Agents</a>
+    <span class="source-domain">(blowmage.com)</span>
+  </div>
+  <div class="item-orig-title">Developer experience report: long-running AI agents degrade in quality after ~4 hours</div>
+  <div class="item-meta">
+    <span class="pts">70 points</span>
+    &nbsp;|&nbsp; Apr 16, 02:13 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47787854">37 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Developer ran a long agent session; quality stayed high for ~4 hours then noticeably degraded.</li>
+      <li>Identifies two issues: context window rot (instructions drift) and the model taking literal shortcuts.</li>
+      <li>Commenters suggest smaller task batches, frequent context resets, and more precise prompting as mitigations.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47787854">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Core observation: quality degrades ~4 hours in — context rot makes the agent ignore earlier instructions.</li>
+      <li>Quality of output depends heavily on quality of prompting; vague questions get authoritative-sounding garbage.</li>
+      <li>&#x27;Remember when programming was fun?&#x27; — comment struck a nerve with many developers.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">AI Coding &amp; Development</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://github.com/gainsec/autoprober">Guy builds AI driven hardware hacker arm from duct tape, old cam and CNC machine</a>
+    <span class="source-domain">(github.com)</span>
+  </div>
+  <div class="item-orig-title">DIY AI-driven flying probe uses Claude + CNC arm to autonomously test circuit boards</div>
+  <div class="item-meta">
+    <span class="pts">150 points</span>
+    &nbsp;|&nbsp; Apr 16, 21:56 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47800033">33 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>AutoProber mounts an oscilloscope probe on a 3-axis CNC arm and uses Claude to control it.</li>
+      <li>Claude ingests circuit documentation, plans probe targets, and interprets measurements autonomously.</li>
+      <li>Commenters note this mirrors commercial flying probe testers but with AI replacing manual target selection.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47800033">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Hardware described as a &#x27;flying probe&#x27; — commercial equivalents exist but cost far more.</li>
+      <li>The AI&#x27;s main contribution: reading IC labels and selecting probe targets, eliminating manual drudgery.</li>
+      <li>Seen as a proof of concept for AI-controlled physical lab equipment.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://github.com/SeanFDZ/macmind">Show HN: MacMind – A transformer neural network in HyperCard on a 1989 Macintosh</a>
+    <span class="source-domain">(github.com)</span>
+  </div>
+  <div class="item-orig-title">MacMind: transformer neural network implemented in HyperCard on a 1989 Macintosh</div>
+  <div class="item-meta">
+    <span class="pts">136 points</span>
+    &nbsp;|&nbsp; Apr 16, 13:16 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47792525">35 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>MacMind implements a small transformer (attention + feedforward) entirely in HyperCard on System 6.</li>
+      <li>Demonstrates that the mathematical primitives of modern AI are not inherently compute-intensive in concept.</li>
+      <li>HN discussion reflects on how this reframes the &#x27;AI requires massive GPUs&#x27; narrative.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47792525">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Commenters find it quietly impressive — modern AI ideas implemented on 1989 hardware.</li>
+      <li>Philosophical point: the math behind transformers is conceptually simple; it&#x27;s scale that needs GPUs.</li>
+      <li>Comparison made to running LLM inference on Windows 3.1 machines.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://github.com/macOS26/Agent">Agent - Native Mac OS X coding ide/harness</a>
+    <span class="source-domain">(github.com)</span>
+  </div>
+  <div class="item-orig-title">Agent: open-source native macOS coding IDE and harness for LLM agents</div>
+  <div class="item-meta">
+    <span class="pts">77 points</span>
+    &nbsp;|&nbsp; Apr 16, 00:19 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47787127">32 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Agent is an open-source macOS coding IDE that runs LLM agents natively using a Launch Daemon for root access.</li>
+      <li>Supports multiple backends and provides a native UI rather than wrapping a web view.</li>
+      <li>Some concern in comments about the GitHub org name &#x27;macOS26&#x27; mimicking Apple branding.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47787127">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Root-level command execution via a Launch Daemon raised immediate security concerns in comments.</li>
+      <li>The &#x27;macOS26&#x27; GitHub org name confused users, with some flagging it as potential phishing.</li>
+      <li>Limited discussion — the project is early-stage with few stars.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://github.com/GRVYDEV/marky">Show HN: Marky – A lightweight Markdown viewer for agentic coding</a>
+    <span class="source-domain">(github.com)</span>
+  </div>
+  <div class="item-orig-title">Marky: lightweight macOS markdown viewer built for agentic coding workflows</div>
+  <div class="item-meta">
+    <span class="pts">58 points</span>
+    &nbsp;|&nbsp; Apr 16, 16:08 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47795468">29 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Marky is a fast native macOS markdown viewer designed for reviewing AI agent outputs in real time.</li>
+      <li>Built with Tauri v2, React, and markdown-it; lightweight footprint compared to Electron apps.</li>
+      <li>Discussion touches on a broader trend of tooling emerging around agentic coding workflows.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47795468">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Debate over whether Tauri + React counts as &#x27;native&#x27; — most commenters say no.</li>
+      <li>The agentic coding tooling ecosystem is growing fast; multiple commenters are building similar tools.</li>
+      <li>Marky fills a real gap for reviewing agent markdown output without leaving the terminal workflow.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">AI Safety &amp; Ethics</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://antirez.com/news/163">AI cybersecurity is not proof of work</a>
+    <span class="source-domain">(antirez.com)</span>
+  </div>
+  <div class="item-orig-title">Antirez argues AI security tooling inflates false confidence — not a proof-of-work signal</div>
+  <div class="item-meta">
+    <span class="pts">219 points</span>
+    &nbsp;|&nbsp; Apr 16, 10:48 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47791236">83 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Antirez (Redis creator) argues that AI finding security bugs does not validate the overall security posture.</li>
+      <li>A model that finds bug A may entirely miss bug B — passing an AI security review isn&#x27;t proof of safety.</li>
+      <li>Notes Anthropic deliberately avoided making Mythos model specifically good at security.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47791236">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Antirez&#x27;s post sparked debate about what AI security evaluation actually proves.</li>
+      <li>One commenter noted Anthropic specifically avoided training Mythos for security — yet it&#x27;s still used for it.</li>
+      <li>Consensus: AI security tools are useful for triage but not a substitute for expert review.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://github.com/libsdl-org/SDL/issues/15350">SDL bans AI-written commits</a>
+    <span class="source-domain">(github.com)</span>
+  </div>
+  <div class="item-orig-title">SDL (libsdl) bans AI-generated commits from the project</div>
+  <div class="item-meta">
+    <span class="pts">121 points</span>
+    &nbsp;|&nbsp; Apr 16, 09:40 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47790791">121 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>SDL&#x27;s maintainers opened an issue formally banning AI-written commits from the project.</li>
+      <li>Rationale: difficulty reviewing AI-generated diffs, attribution concerns, and process integrity.</li>
+      <li>HN divided: some see it as valuing process over results; others argue code quality and culture matter.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47790791">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>&#x27;We&#x27;ll need an Organic Software seal of approval soon&#x27; — top comment, both joking and serious.</li>
+      <li>Split: some see the ban as principled; others see it as valuing process over results.</li>
+      <li>Broader question raised: how do you even detect AI-written code reliably?</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://techstackups.com/articles/laravel-raised-money-and-now-injects-ads-directly-into-your-agent/">Laravel raised money and now injects ads directly into your agent</a>
+    <span class="source-domain">(techstackups.com)</span>
+  </div>
+  <div class="item-orig-title">Laravel injects ads into agent responses after raising venture funding</div>
+  <div class="item-meta">
+    <span class="pts">190 points</span>
+    &nbsp;|&nbsp; Apr 16, 14:51 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47793926">112 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Laravel now injects advertising content into agent tool responses after closing a funding round.</li>
+      <li>Developers using Laravel&#x27;s AI tooling report sponsored content appearing in agent outputs.</li>
+      <li>Sparked dystopian discussion about ad-supported AI and what monetization of agent infrastructure means.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47793926">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Dark dystopian humor dominated: neural implant ads, Black Mirror references.</li>
+      <li>Technical concern: injecting content into agent tool responses corrupts the trust model of agentic systems.</li>
+      <li>Some see this as an early warning about ad-monetized AI infrastructure becoming standard.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="http://www.kleefeldoncomics.com/2026/04/amazon-ai-cancelling-webcomics.html">Amazon AI Cancelling Webcomics</a>
+    <span class="source-domain">(kleefeldoncomics.com)</span>
+  </div>
+  <div class="item-orig-title">Webcomic creators suspect AI-driven account review behind sudden Amazon bans</div>
+  <div class="item-meta">
+    <span class="pts">62 points</span>
+    &nbsp;|&nbsp; Apr 16, 00:52 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47787368">10 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Two Amazon sellers with webcomic-related content had accounts terminated suddenly with no appeal process.</li>
+      <li>The author speculates (without proof) that Amazon has automated account review with AI.</li>
+      <li>HN commenters mostly skeptical of the AI attribution — the evidence is circumstantial.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47787368">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>HN consensus: the AI attribution in the headline is speculation, not established fact.</li>
+      <li>Amazon&#x27;s lack of appeals process is the real concern — regardless of whether AI is involved.</li>
+      <li>Pattern of sudden, opaque account terminations is well-documented across Amazon sellers.</li>
+    </ul>
+  </details>
+</div>
+<div class="category-header">AI in Society</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://www.openculture.com/2026/04/how-george-orwell-predicted-the-rise-of-ai-slop.html">George Orwell Predicted the Rise of &quot;AI Slop&quot; in Nineteen Eighty-Four</a>
+    <span class="source-domain">(openculture.com)</span>
+  </div>
+  <div class="item-orig-title">Orwell&#x27;s &quot;prolefeed&quot; machine in 1984 as a prescient metaphor for AI content mills</div>
+  <div class="item-meta">
+    <span class="pts">74 points</span>
+    &nbsp;|&nbsp; Apr 16, 23:17 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47800765">48 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Essay draws parallels between the &#x27;Versificator&#x27; in 1984 (machine that produces formulaic content) and LLMs.</li>
+      <li>Orwell described mass production of low-quality media for passive consumption — the AI slop analogy.</li>
+      <li>Discussion extends to other prescient authors (Asimov, Bradbury) who anticipated automated content.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47800765">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Other prescient quotes shared: Asimov, Bradbury, and a lesser-known robot story about creative automation.</li>
+      <li>Discussion of whether Orwell was predicting intent (propaganda) vs. effect (low-quality volume).</li>
+      <li>Limited discussion — most engagement was quoting other authors with similar predictions.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://www.chalkbeat.org/2026/04/09/sal-khan-reflects-on-ai-in-schools-and-khanmigo/">Sal Khan&#x27;s AI revolution hasn&#x27;t happened yet</a>
+    <span class="source-domain">(chalkbeat.org)</span>
+  </div>
+  <div class="item-orig-title">Four years in, Sal Khan admits KhanMigo AI tutoring hasn&#x27;t moved the needle yet</div>
+  <div class="item-meta">
+    <span class="pts">58 points</span>
+    &nbsp;|&nbsp; Apr 16, 05:05 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47788845">73 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Chalkbeat reports that after 4 years, Khanmigo has very few consistent users and no outcome data.</li>
+      <li>Khan himself acknowledges the AI tutoring revolution is behind schedule.</li>
+      <li>Commenters point to motivation and context-setting as hard problems AI still can&#x27;t solve for learners.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47788845">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Commenters note that self-motivated students are exactly the ones who don&#x27;t need AI tutoring.</li>
+      <li>AI tutoring&#x27;s core challenge: understanding what the student doesn&#x27;t know requires deep context.</li>
+      <li>Some personal success stories shared, but without systematic outcome data to back them up.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://www.engadget.com/ai/theres-yet-another-study-about-how-bad-ai-is-for-our-brains-183418494.html">There&#x27;s yet another study about how bad AI is for our brains</a>
+    <span class="source-domain">(engadget.com)</span>
+  </div>
+  <div class="item-orig-title">New study adds to evidence that heavy AI use may atrophy critical thinking</div>
+  <div class="item-meta">
+    <span class="pts">49 points</span>
+    &nbsp;|&nbsp; Apr 16, 14:30 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47793522">61 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Study finds heavy AI use correlates with reduced critical thinking and independent problem-solving.</li>
+      <li>Researchers measured cognitive engagement — AI-heavy workflows showed lower active reasoning.</li>
+      <li>Counterargument in comments: same trade-off exists for calculators, GPS, spell-checkers.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47793522">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Discussion framed around whether cognitive trade-offs from convenience are acceptable.</li>
+      <li>The driving/walking analogy: we&#x27;ve already traded physical activity for convenience; is mental the same?</li>
+      <li>Concern that mental atrophy is harder to reverse than physical.</li>
+    </ul>
+  </details>
+</div>
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://tomtunguz.com/ai-compute-crisis-2026/">The beginning of scarcity in AI</a>
+    <span class="source-domain">(tomtunguz.com)</span>
+  </div>
+  <div class="item-orig-title">Analyst argues AI is entering a compute-scarcity phase that will reshape model strategy</div>
+  <div class="item-meta">
+    <span class="pts">46 points</span>
+    &nbsp;|&nbsp; Apr 16, 20:49 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47799322">69 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Analyst argues the era of cheap, abundant AI compute is ending as demand outpaces infrastructure build-out.</li>
+      <li>Predicts this will force optimization: better harnesses, smaller models, and efficient inference.</li>
+      <li>Commenters note China has operated in a scarcity mindset all along, producing leaner specialized models.</li>
+    </ul>
+    <div class="disc-header">Discussion: <a href="https://news.ycombinator.com/item?id=47799322">HN thread</a></div>
+    <ul class="discussion-bullets">
+      <li>Constraints may force innovation: harness design and small models named as areas with lots of low-hanging fruit.</li>
+      <li>China already operates in a scarcity mindset — lean, specialized models are the norm there.</li>
+      <li>Observation: Claude Code wastes tokens on repeated failed file edits — harness inefficiency is real.</li>
+    </ul>
+  </details>
+</div></div>
+  </body>
+</html>
+
