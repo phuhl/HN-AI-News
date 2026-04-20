@@ -100,11 +100,7 @@ End with a `## Key Themes` section (3-5 sentences).
 
 ### Output B: HTML day file + index
 
-**0. Shared stylesheet** — copy `{{SKILL_DIR}}/assets/style.css` to `<workspace>/style.css` (overwrite — this ensures the latest styles are always in sync):
-
-```bash
-cp {{SKILL_DIR}}/assets/style.css <workspace>/style.css
-```
+**0. Shared stylesheet** — sync `{{SKILL_DIR}}/assets/style.css` to `<workspace>/style.css` so the latest styles are always in place. Use the `Read` tool to read `{{SKILL_DIR}}/assets/style.css`, then use the `Write` tool to write its contents to `<workspace>/style.css`. Do **not** use a Bash `cp` command for this step — it passes a `.claude/` path through the shell and triggers an unnecessary security prompt.
 
 **1. Day file** — write `<workspace>/hn-ai-news-<YYYY-MM-DD>.html`.
 
