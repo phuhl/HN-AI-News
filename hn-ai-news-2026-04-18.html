@@ -36,17 +36,16 @@
     <div id="wrap">
 
 <p style="font-size:8pt; color:#828282; margin-bottom:4px;">
-  April 18, 2026 &mdash; 16 AI-relevant posts from 101 total
+  April 18, 2026 &mdash; 10 AI-relevant posts from 78 total &mdash; data window: Apr 17, 2026
 </p>
 
 <div class="themes">
   <div class="themes-title">Key Themes</div>
   <ul>
-    <li>Anthropic dominated the news cycle with five separate threads covering system prompt changes between Opus versions, user bans, spyware concerns, token counting tools, and memory extensions — reflecting both its centrality to developer workflows and growing scrutiny of its practices.</li>
-    <li>AI productivity skepticism is intensifying: CEOs report no measurable employment or productivity gains from AI, while Uber&#39;s high-profile Anthropic partnership produced only generic, repetitive restaurant copy that users find unhelpful.</li>
-    <li>On-device and in-browser inference matured, with a demo running a 3.1GB Gemma 4 model entirely in WebAssembly and a deep-dive showing how Apple Silicon&#39;s unified memory eliminates copy overhead for GPU inference.</li>
-    <li>The agent ecosystem is developing new primitives: browser-use.com launched CAPTCHAs designed to verify AI agents rather than block them, while developers shared lightweight file-based inter-agent messaging as an API-free alternative.</li>
-    <li>Anti-AI sentiment is rising in consumer communities driven by tangible costs — hardware prices doubling and electricity bills climbing — rather than abstract fears.</li>
+    <li>Anthropic had a blockbuster day: the Claude Design language reveal (1,215 pts) sparked debate about AI tool homogeneity, while an in-depth tokenizer cost analysis for Claude 4.7 showed the real financial implications of model upgrades for heavy users.</li>
+    <li>The economics of AI agents came into sharp focus via Toby Ord&#39;s analysis showing exponential hourly-cost curves — triggering discussion of when AI agents will genuinely be cost-competitive with human engineers.</li>
+    <li>AI quality and slop detection became a focal point: &#34;Slop Cop&#34; launched as a browser extension to flag AI-generated text, while &#34;Average is all you need&#34; highlighted the danger of trusting unverified AI-generated SQL in production.</li>
+    <li>Tesla&#39;s FSD saga continued as HW3 owners were told to &#34;be patient&#34; after 7 years — a recurring reminder of the gap between autonomous AI promises and actual delivery.</li>
   </ul>
 </div>
 
@@ -55,331 +54,116 @@
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://simonwillison.net/2026/Apr/18/opus-system-prompt/">Changes in the system prompt between Claude Opus 4.6 and 4.7</a>
-    <span class="source-domain">(simonwillison.net)</span>
+    <a class="item-title" href="https://www.anthropic.com/news/claude-design-anthropic-labs">Claude Design</a>
+    <span class="source-domain">(anthropic.com)</span>
   </div>
-  <div class="item-orig-title">Simon Willison documents notable tokenizer and system prompt shifts between Opus 4.6 and 4.7</div>
+  <div class="item-orig-title">Anthropic unveils Claude Design, its new AI-native design system and visual language</div>
   <div class="item-meta">
-    <span class="pts">279 points</span>
-    &nbsp;|&nbsp; Apr 19, 10:36 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47823270">165 comments</a>
+    <span class="pts">1,215 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47806725">749 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Simon Willison compared the system prompts of Claude Opus 4.6 and 4.7, documenting changes in behavior directives and token usage patterns.</li>
-      <li>Opus 4.7&#39;s tokenizer uses approximately 1.46x more tokens than Opus 4.6 for the same input, suggesting a tokenizer overhaul — potentially to improve multilingual performance.</li>
-      <li>The post prompted broad developer discussion about model consistency and the challenges of building multi-provider agentic pipelines.</li>
+      <li>Anthropic published Claude Design, a design system and visual language for building AI-native interfaces with Claude.</li>
+      <li>The system aims to define how Claude-powered products should look and feel, similar to how Material Design or Apple HIG guide platform-native apps.</li>
+      <li>Became the top HN post of the day with nearly 750 comments — a rare level of engagement for a design announcement.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47823270">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47806725">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Several developers said the week-to-week variability in Claude&#39;s behavior limits have pushed them to audit their codebases and decouple from any single provider.</li>
-      <li>One commenter described cancelling their subscription due to inconsistent limits and migrating to pi.ai as an alternative.</li>
-      <li>Discussion of practical challenges making agents from different providers (Claude, Gemini, Codex) work together, including permission errors when spawning cross-provider sub-agents.</li>
+      <li>Many commenters argued that design homogeneity is underrated — the same uniformity that gets criticised (glass effects, drop shadows, then flat design) is exactly what enables fast mental models for users.</li>
+      <li>Counter-view: familiarity is a valid design goal for enterprise and utility tools, but Claude Design&#39;s ambition to define an AI-native aesthetic may just produce the next wave of sameness.</li>
+      <li>Debate about whether Anthropic is trying to own the visual layer of AI interfaces the way Apple owns iOS design, and what that means for third-party developers building on Claude.</li>
     </ul>
   </details>
 </div>
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://bannedbyanthropic.com/">Banned by Anthropic?</a>
-    <span class="source-domain">(bannedbyanthropic.com)</span>
+    <a class="item-title" href="https://www.claudecodecamp.com/p/i-measured-claude-4-7-s-new-tokenizer-here-s-what-it-costs-you">Measuring Claude 4.7&#39;s tokenizer costs</a>
+    <span class="source-domain">(claudecodecamp.com)</span>
   </div>
-  <div class="item-orig-title">Community site collects user ban stories; skeptics question authenticity of submissions</div>
+  <div class="item-orig-title">Claude 4.7&#39;s new tokenizer inflates token counts — here&#39;s the real cost impact</div>
   <div class="item-meta">
-    <span class="pts">92 points</span>
-    &nbsp;|&nbsp; Apr 19, 22:33 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47828249">64 comments</a>
+    <span class="pts">707 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47807006">493 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>A new site aggregates stories from users claiming to have been banned by Anthropic from Claude, requiring a GitHub account to submit.</li>
-      <li>The site launched April 18, 2026 and quickly attracted dozens of submissions across a variety of use cases.</li>
-      <li>The project raises questions about Anthropic&#39;s ban appeal process and transparency around enforcement.</li>
+      <li>Claude 4.7 ships a new tokenizer that produces significantly more tokens for the same input compared to 4.6 — the author measured the cost differential across real workloads.</li>
+      <li>For heavy users, the tokenizer change alone can materially increase API bills without any change in the prompts or capabilities used.</li>
+      <li>The post sparked the second-highest HN comment count of the day, showing strong developer sensitivity to pricing changes.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47828249">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47807006">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Skeptics noted that many accounts were created on April 18th with no prior GitHub activity, suggesting coordinated or artificial submissions.</li>
-      <li>Defenders pointed out that non-technical users (e.g., someone studying the French Revolution) wouldn&#39;t be expected to have a prior GitHub account.</li>
-      <li>Community interest centered on whether Anthropic&#39;s enforcement is consistent and whether there&#39;s any recourse for wrongly banned users.</li>
+      <li>Discussion referenced Toby Ord&#39;s performance/cost frontier framing — it&#39;s unclear whether Claude 4.7 represents a shift on the frontier or just a new point on the same curve at higher cost.</li>
+      <li>Several developers said the tokenizer change makes cost estimation harder, since existing benchmarks and cost models are now stale.</li>
+      <li>Thread linked to the concurrent &#34;Are the costs of AI agents also rising exponentially?&#34; post as the two were seen as complementary data points on the same trend.</li>
     </ul>
   </details>
 </div>
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://simonwillison.net/2026/Apr/20/claude-token-counts/">Claude Token Counter, now with model comparisons</a>
-    <span class="source-domain">(simonwillison.net)</span>
+    <a class="item-title" href="https://lucasgerads.com/blog/lecroy-mcp-spice-demo/">Show HN: SPICE simulation &#8594; oscilloscope &#8594; verification with Claude Code</a>
+    <span class="source-domain">(lucasgerads.com)</span>
   </div>
-  <div class="item-orig-title">Willison&#39;s token counter tool updated to compare tokenization across Claude model versions</div>
+  <div class="item-orig-title">Claude Code used to close the loop between circuit simulation and hardware verification</div>
   <div class="item-meta">
-    <span class="pts">63 points</span>
-    &nbsp;|&nbsp; Apr 20, 00:56 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47829178">21 comments</a>
+    <span class="pts">119 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47801255">32 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Simon Willison updated his Claude token counter to show side-by-side comparisons across model versions, making the Opus 4.7 tokenizer expansion visible.</li>
-      <li>The 1.46x token increase in Opus 4.7 vs. 4.6 is significant for cost estimation and context window planning.</li>
-      <li>Anthropic does not publicly release their tokenizer, so the tool uses the counting API endpoint rather than a local tokenizer.</li>
+      <li>A Show HN demo uses Claude Code via MCP to run SPICE simulations, read oscilloscope output, and verify circuit behavior in a single automated loop.</li>
+      <li>Demonstrates AI-assisted hardware/EDA workflows that go beyond code generation into physical-world verification.</li>
+      <li>The author connected a LeCroy oscilloscope to Claude Code&#39;s tool-calling interface to close the simulation-to-measurement loop.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47829178">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47801255">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Commenters speculated the tokenizer change may target better morphological handling for agglutinative languages like German, Finnish, or Turkish.</li>
-      <li>Discussion of whether morphological tokenizers actually improve model performance — evidence is mixed, with some papers showing gains only for specific language families.</li>
-      <li>Some users questioned the value of token-level explainability given that modern tokenization is largely opaque by design.</li>
+      <li>One commenter warned of dangerous hallucinations: Claude confidently claimed a board had capabilities it didn&#39;t have, which in hardware contexts could cause real damage.</li>
+      <li>The hallucination risk is higher in closed-loop hardware verification because the model has no ground truth — it defaults to optimistic answers when no external verifier exists.</li>
+      <li>Despite the risk, commenters saw the demo as a genuine preview of AI-accelerated hardware design iteration.</li>
     </ul>
   </details>
 </div>
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://www.thatprivacyguy.com/blog/anthropic-spyware/">Anthropic installed a spyware bridge on my machine?</a>
-    <span class="source-domain">(thatprivacyguy.com)</span>
+    <a class="item-title" href="https://blog.vidocsecurity.com/blog/we-reproduced-anthropics-mythos-findings-with-public-models">We reproduced Anthropic&#39;s Mythos findings with public models</a>
+    <span class="source-domain">(vidocsecurity.com)</span>
   </div>
-  <div class="item-orig-title">Blogger flags Claude Code&#39;s native messaging bridge installation as a potential privacy concern</div>
+  <div class="item-orig-title">Security researchers claim to reproduce Anthropic&#39;s Mythos vulnerability-finding results using open models</div>
   <div class="item-meta">
-    <span class="pts">47 points</span>
-    &nbsp;|&nbsp; Apr 20, 02:41 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47829800">16 comments</a>
+    <span class="pts">109 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47806116">56 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>The author discovered that installing Claude Code placed native messaging manifest files on their machine, enabling browser extension communication with the local agent.</li>
-      <li>The post labels this a &#34;spyware bridge&#34; and catalogues several other dark patterns and privacy concerns in Claude Code&#39;s installation behavior.</li>
-      <li>Native messaging manifests are a standard browser API mechanism and are not inherently malicious, but require user awareness.</li>
+      <li>Vidoc Security claims to have reproduced the security vulnerability findings from Anthropic&#39;s Mythos research using publicly available models.</li>
+      <li>If confirmed, it would mean Mythos-style automated security research is not gated behind Claude specifically.</li>
+      <li>The reproduction raises questions about how Anthropic framed the original Mythos capabilities.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47829800">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47806116">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Technical commenters quickly clarified that native messaging manifests are how browser-native app communication is designed to work — not spyware by definition.</li>
-      <li>Others acknowledged that while &#34;spyware&#34; is an overstatement, the post raises legitimate concerns about undisclosed installation side-effects and transparency.</li>
-      <li>A GitHub issue thread was referenced showing users struggling to make the native messaging setup work manually, suggesting the feature is not well documented.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://github.com/memvid/claude-brain">Claude Brain</a>
-    <span class="source-domain">(github.com)</span>
-  </div>
-  <div class="item-orig-title">Open source tool gives Claude persistent cross-session memory via GitHub-backed storage</div>
-  <div class="item-meta">
-    <span class="pts">33 points</span>
-    &nbsp;|&nbsp; Apr 19, 15:48 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47825158">22 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Claude Brain is an open source MCP-based tool that stores conversation context and project state in a GitHub repository, giving Claude memory across sessions.</li>
-      <li>Designed to solve the frustration of re-explaining project context each session — particularly for long-running engineering work.</li>
-      <li>Uses a structured markdown format for storing memories, tasks, and decisions.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47825158">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Commenters noted that a clean context can actually be preferable for some workflows — especially when switching between unrelated tasks.</li>
-      <li>A competing approach using in-repo markdown ticket tracking (no MCP, no Jira) was shared as a simpler alternative.</li>
-      <li>One comment flagged a suggested git config change in the README (replacing SSH URLs with HTTPS globally) as potentially harmful advice that could break existing SSH-based remotes.</li>
-    </ul>
-  </details>
-</div>
-
-<!-- AI Industry & Business -->
-<div class="category-header">AI Industry &amp; Business</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://finance.yahoo.com/sectors/technology/articles/ubers-anthropic-ai-push-hits-223109852.html">Uber&#39;s Anthropic AI push hits a wall</a>
-    <span class="source-domain">(finance.yahoo.com)</span>
-  </div>
-  <div class="item-orig-title">Uber&#39;s $3.4B Anthropic investment yields generic AI copy that users find repetitive and unhelpful</div>
-  <div class="item-meta">
-    <span class="pts">90 points</span>
-    &nbsp;|&nbsp; Apr 19, 18:13 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47826328">93 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Uber&#39;s major Anthropic investment has produced AI-generated restaurant descriptions in Uber Eats that users find indistinguishably samey and tone-deaf.</li>
-      <li>Every restaurant gets formulaic copy like &#34;Authentic [cuisine] bursting with rich flavours&#34; regardless of the actual establishment.</li>
-      <li>The article questions whether Uber is investing AI budget in the right features, versus improvements users actually want (e.g., more photos, better delivery logistics).</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47826328">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>One commenter sampled their local Uber Eats app and found every restaurant description used &#34;Authentic,&#34; &#34;Rich,&#34; or &#34;Vibrant&#34; — the repetition is immediately obvious when reading multiple listings.</li>
-      <li>Discussion noted this is the result of constrained generation (must be positive, non-spoilery, short) applied at scale with no memory of prior outputs — similar problems appeared in early YouTube AI summaries.</li>
-      <li>Commenters debated whether $3.4B on Uber Eats blurbs made sense vs. using AI to overhaul the delivery experience or driver pay.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://fortune.com/article/why-do-thousands-of-ceos-believe-ai-not-having-impact-productivity-employment-study/">CEOs admit AI had no impact on employment or productivity</a>
-    <span class="source-domain">(fortune.com)</span>
-  </div>
-  <div class="item-orig-title">Large CEO survey finds no measurable AI impact on employment or productivity despite massive investment</div>
-  <div class="item-meta">
-    <span class="pts">80 points</span>
-    &nbsp;|&nbsp; Apr 19, 21:56 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47827985">72 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>A Fortune-cited study surveying thousands of CEOs found the majority reporting no measurable impact from AI on either employment levels or productivity metrics.</li>
-      <li>The findings contrast sharply with the scale of AI investment across industries and the widespread narrative of imminent AI-driven transformation.</li>
-      <li>The study distinguishes between AI hype driving stock price and actual operational changes that appear in productivity data.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47827985">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>One commenter described their company going all-in on AI for engineers while stock fell 70% — attributing both to broader market trends rather than a direct link, but noting the pivot to AI-first branding felt opportunistic.</li>
-      <li>Community pushed back on the methodology: stock prices react faster than revenue, and AI productivity gains may take years to appear in macro surveys.</li>
-      <li>Comparisons drawn to the blockchain/NFT era, questioning whether AI is another trend CEOs are following for optics rather than genuine strategic value.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://www.swiss-ai.org">Swiss AI Initiative (2023)</a>
-    <span class="source-domain">(swiss-ai.org)</span>
-  </div>
-  <div class="item-orig-title">Switzerland&#39;s national AI initiative releases Apertus open LLMs supporting 1,800+ languages</div>
-  <div class="item-meta">
-    <span class="pts">51 points</span>
-    &nbsp;|&nbsp; Apr 19, 22:58 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47828444">16 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>The Swiss AI Initiative has published Apertus, open source 8B and 70B base and instruction-tuned LLMs with emphasis on multilingual coverage (1,800+ languages in pre-training data).</li>
-      <li>Models are available on Hugging Face; the initiative is a government-backed effort to build sovereign AI infrastructure outside US/China hyperscalers.</li>
-      <li>Benchmarks are provided in the paper; the project is notable for prioritizing linguistic diversity over raw English-benchmark performance.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47828444">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Community interest focused on the multilingual capabilities — covering low-resource languages that commercial models typically underserve.</li>
-      <li>Few commenters had tested the models hands-on; early impressions were limited to the paper benchmarks.</li>
-      <li>The initiative was seen as a positive model for national AI sovereignty efforts, distinct from purely commercial open source releases.</li>
-    </ul>
-  </details>
-</div>
-
-<!-- Google / DeepMind -->
-<div class="category-header">Google / DeepMind</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://vucense.com/privacy-sovereignty/surveillance-biometrics/google-gemini-personal-intelligence-photos-privacy-2026/">Google Gemini Is Scanning Your Photos &#8211; and the EU Said No</a>
-    <span class="source-domain">(vucense.com)</span>
-  </div>
-  <div class="item-orig-title">Google&#39;s Gemini photo scanning feature draws EU regulatory pushback on privacy grounds</div>
-  <div class="item-meta">
-    <span class="pts">51 points</span>
-    &nbsp;|&nbsp; Apr 19, 16:36 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47825520">18 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Google is using Gemini to automatically scan and analyze users&#39; photo libraries as part of its &#34;Personal Intelligence&#34; features.</li>
-      <li>EU regulators have blocked or restricted the rollout of these features, citing GDPR concerns around automated biometric and personal data processing.</li>
-      <li>The feature is active by default in regions where it has launched, raising questions about opt-out clarity.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47825520">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Commenters debated whether this falls under the EU AI Act&#39;s prohibited biometric categorization provisions or the broader GDPR consent framework.</li>
-      <li>Some noted the EU&#39;s willingness to block Google features as a meaningful counterweight to default-on data collection practices.</li>
-      <li>Limited discussion overall — thread had few substantive comments beyond initial reactions.</li>
-    </ul>
-  </details>
-</div>
-
-<!-- AI Products & Tools -->
-<div class="category-header">AI Products &amp; Tools</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://teamchong.github.io/turboquant-wasm/draw.html">Show HN: Prompt-to-Excalidraw demo with Gemma 4 E2B in the browser (3.1GB)</a>
-    <span class="source-domain">(teamchong.github.io)</span>
-  </div>
-  <div class="item-orig-title">3.1GB Gemma 4 model runs entirely in-browser via WebAssembly to generate Excalidraw diagrams from text</div>
-  <div class="item-meta">
-    <span class="pts">113 points</span>
-    &nbsp;|&nbsp; Apr 19, 11:17 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47823460">46 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>A Show HN demo runs Google&#39;s Gemma 4 model (3.1GB) entirely client-side in WebAssembly using the E2B sandbox environment, with no server-side inference.</li>
-      <li>Users type a prompt and the model generates structured Excalidraw JSON, which is rendered as a diagram in-browser.</li>
-      <li>Demonstrates that capable diagram-generation AI is feasible without any API calls or backend infrastructure.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47823460">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Several commenters noted they already use Claude Code to generate Mermaid diagrams and convert them to PNG via headless rendering — similar workflow, different stack.</li>
-      <li>Discussion of the Mermaid-to-Excalidraw pipeline as a useful intermediate step for engineering proposals and architecture documentation.</li>
-      <li>The 3.1GB model size was a point of interest — showing how capable in-browser inference has become on modern hardware.</li>
-    </ul>
-  </details>
-</div>
-
-<!-- AI Infrastructure & Compute -->
-<div class="category-header">AI Infrastructure &amp; Compute</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://abacusnoir.com/2026/04/18/zero-copy-gpu-inference-from-webassembly-on-apple-silicon/">Zero-Copy GPU Inference from WebAssembly on Apple Silicon</a>
-    <span class="source-domain">(abacusnoir.com)</span>
-  </div>
-  <div class="item-orig-title">Technical deep-dive: Apple Silicon&#39;s unified memory enables zero-copy GPU inference from WebAssembly</div>
-  <div class="item-meta">
-    <span class="pts">112 points</span>
-    &nbsp;|&nbsp; Apr 18, 22:46 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47820195">51 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>On Apple Silicon, CPU and GPU share the same physical memory (Unified Memory Architecture), meaning ML tensors can be accessed by the GPU without any copy operation.</li>
-      <li>The post explains how WebAssembly inference runtimes can exploit this to dramatically reduce latency and memory overhead on Apple Silicon Macs and iPhones.</li>
-      <li>Key insight: the &#34;zero-copy&#34; advantage is architectural — it doesn&#39;t apply to x86 systems with discrete GPUs that have separate VRAM.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47820195">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Commenters clarified that x86 iGPUs (integrated graphics) reserve a fixed RAM chunk at boot for the framebuffer — architecturally different from Apple&#39;s UMA which is unified at the hardware level.</li>
-      <li>Discussion of why discrete GPUs bring their own VRAM and what the CPU-GPU data transfer bottleneck means for inference workloads.</li>
-      <li>Some pushback on the &#34;reality distortion field&#34; framing — the UMA advantage is real but has been misrepresented in Apple marketing as more novel than it is.</li>
+      <li>Skeptics noted the reproduction didn&#39;t use Anthropic&#39;s actual prompt — without using the same prompt, it&#39;s unclear whether it genuinely reproduces the finding or just demonstrates similar capability.</li>
+      <li>Broader concern that AI security capability claims are rarely accompanied by enough detail to evaluate independently, making reproductions inherently ambiguous.</li>
+      <li>Some commenters questioned whether the Mythos release itself was a genuine research contribution or primarily a marketing exercise around Claude&#39;s security capabilities.</li>
     </ul>
   </details>
 </div>
@@ -389,58 +173,151 @@
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://browser-use.com/posts/prove-you-are-a-robot">Prove you are a robot: CAPTCHAs for agents</a>
-    <span class="source-domain">(browser-use.com)</span>
+    <a class="item-title" href="https://www.tobyord.com/writing/hourly-costs-for-ai-agents">Are the costs of AI agents also rising exponentially? (2025)</a>
+    <span class="source-domain">(tobyord.com)</span>
   </div>
-  <div class="item-orig-title">browser-use launches CAPTCHAs designed to verify AI agents rather than block them</div>
+  <div class="item-orig-title">Toby Ord charts exponential cost curves for AI agents — and what it means for human labor substitution</div>
   <div class="item-meta">
-    <span class="pts">86 points</span>
-    &nbsp;|&nbsp; Apr 15, 17:03 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47781950">43 comments</a>
+    <span class="pts">302 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47778922">129 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>browser-use introduced an inverted CAPTCHA concept: instead of blocking bots, these challenges verify that a visitor IS an AI agent before granting access to agent-specific API surfaces.</li>
-      <li>The challenges use obfuscated math problems with Chinese/Japanese number characters mixed with ASCII noise, exploiting differences in how agents and humans parse text.</li>
-      <li>Positions agent identity verification as an emerging infrastructure need as agentic web traffic grows.</li>
+      <li>Toby Ord analyzes the hourly cost of capable AI agents over time, finding that costs are falling exponentially — potentially faster than performance is improving.</li>
+      <li>The analysis frames the question of AI agent economics similarly to cloud vs. on-premise compute decisions: at what cost crossover does it make sense to use AI vs. hire a human?</li>
+      <li>Uses METR task-completion benchmark data as the capability axis, plotting against API cost per hour of agent runtime.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47781950">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47778922">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>One commenter called the challenge format more compelling evidence of AI intelligence than ARC-3 benchmarks — agents solving obfuscated multilingual math is qualitatively different from pattern matching.</li>
-      <li>A commenter shared that their agent hit the endpoint and received jumbled text mixing CJK numerals with ASCII corruption, which the agent parsed and solved correctly.</li>
-      <li>Linguistic debate: the CJK numerals used are historically Chinese characters adopted into Japanese — calling them &#34;Japanese characters&#34; without script context is imprecise.</li>
+      <li>Commenters noted that using METR data obscures the picture — comparing against open-model cost frontiers (e.g. GLM-5.1, MiniMax-M2.7) paints a very different cost trajectory.</li>
+      <li>The cloud vs. on-premise analogy resonated: some predicted software engineering project estimates will shift from time-based to capex/token-budget-based within a few years.</li>
+      <li>Skeptics argued the framing assumes agent capabilities are fungible with human work hours — a substitution that hasn&#39;t materialized cleanly in practice.</li>
     </ul>
   </details>
 </div>
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://juanpabloaj.com/2026/04/16/a-lightweight-way-to-make-agents-talk-without-paying-for-api-usage/">Show HN: A lightweight way to make agents talk without paying for API usage</a>
-    <span class="source-domain">(juanpabloaj.com)</span>
+    <a class="item-title" href="https://isitagentready.com">Scan your website to see how ready it is for AI agents</a>
+    <span class="source-domain">(isitagentready.com)</span>
   </div>
-  <div class="item-orig-title">File-based inter-agent messaging as a zero-cost alternative to API-mediated agent communication</div>
+  <div class="item-orig-title">New tool scores websites on AI-agent accessibility — community debates whether helping agents is wise</div>
   <div class="item-meta">
-    <span class="pts">28 points</span>
-    &nbsp;|&nbsp; Apr 20, 00:21 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47828968">6 comments</a>
+    <span class="pts">112 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47805998">175 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>The post describes a pattern where AI agents communicate through shared local files (inboxes, task lists) rather than paying for API calls between agent instances.</li>
-      <li>Reduces cost for multi-agent workflows where agents need to coordinate but don&#39;t require real-time LLM-mediated communication.</li>
-      <li>Suited for asynchronous agent architectures where tasks can be queued and polled.</li>
+      <li>isitagentready.com scans a URL and scores how accessible the site is to AI agents — structured data, machine-readable content, llms.txt compliance, etc.</li>
+      <li>Positioned as helping developers make their sites agent-friendly as autonomous browsing becomes common.</li>
+      <li>Sparked unusually contentious debate about whether site owners should be helping AI agents at all.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47828968">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47805998">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>A commenter noted Claude Code&#39;s Agent Teams feature already uses this exact pattern — local files as inboxes with tmux/iTerm2 integration for multi-agent coordination.</li>
-      <li>The roborev.io project (from Wes McKinney) was mentioned as a related approach to agent orchestration.</li>
-      <li>Limited discussion; community validated the approach as sound but pointed to existing implementations.</li>
+      <li>Top comment highlighted the contradiction: &#34;AI industry says agents will do any white-collar job — also AI industry: please adapt your website so agents can use it.&#34;</li>
+      <li>Many commenters said the tool effectively provides a checklist for making your site hostile to AI agents — inverting the intended use.</li>
+      <li>Others pointed out that AI scrapers ignore robots.txt and llms.txt anyway, so voluntary compliance is mostly theater.</li>
+    </ul>
+  </details>
+</div>
+
+<!-- AI Safety & Ethics -->
+<div class="category-header">AI Safety &amp; Ethics</div>
+
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://awnist.com/slop-cop">Slop Cop</a>
+    <span class="source-domain">(awnist.com)</span>
+  </div>
+  <div class="item-orig-title">Browser extension detects and flags AI-generated &#34;slop&#34; in text on any webpage</div>
+  <div class="item-meta">
+    <span class="pts">244 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47806845">160 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>Slop Cop is a browser extension that highlights suspected AI-generated text on any webpage, similar to Grammarly but detecting rather than improving writing.</li>
+      <li>Targets the growing volume of AI-generated filler content that passes superficially but lacks original thought or concision.</li>
+      <li>The name &#34;slop&#34; has become a common informal term for low-quality AI-generated content that floods feeds, search results, and inboxes.</li>
+    </ul>
+    <div class="disc-header">
+      Discussion: <a href="https://news.ycombinator.com/item?id=47806845">HN thread</a>
+    </div>
+    <ul class="discussion-bullets">
+      <li>Some commenters argued the extension could be useful for business writing regardless of AI detection — it surfaces verbosity and filler that human writers also produce.</li>
+      <li>Debate about whether brevity should be the primary signal: &#34;judge an author by the length of their text&#34; — but short AI output can also be slop.</li>
+      <li>A commenter shared that their employer had declared brevity a core company value — creating perverse incentives where terse AI output gets rewarded over thoughtful human writing.</li>
+    </ul>
+  </details>
+</div>
+
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://rawquery.dev/blog/average-is-all-you-need">Average is all you need</a>
+    <span class="source-domain">(rawquery.dev)</span>
+  </div>
+  <div class="item-orig-title">The danger of accepting AI-generated SQL without verification — average outputs cause real data errors</div>
+  <div class="item-meta">
+    <span class="pts">112 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47754603">100 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>The post argues that AI-generated SQL looks correct but often produces plausible-but-wrong results — especially for attribution, aggregation, and edge-case logic.</li>
+      <li>The core problem: users who can&#39;t write SQL also can&#39;t verify AI-generated SQL, creating a blind trust loop.</li>
+      <li>Title is a riff on &#34;Attention is all you need&#34; — arguing that &#34;average&#34; (median, plausible) output is what transformers naturally produce.</li>
+    </ul>
+    <div class="disc-header">
+      Discussion: <a href="https://news.ycombinator.com/item?id=47754603">HN thread</a>
+    </div>
+    <ul class="discussion-bullets">
+      <li>Top comment: &#34;you asked a question in English and got a table — but nobody checked if it was correct.&#34; The follow-up response noted no one said you didn&#39;t have to check either.</li>
+      <li>Key rebuttal: if you don&#39;t know SQL and your only view into the data is SQL, how do you verify the output? The tool creates a dependency it can&#39;t resolve.</li>
+      <li>Several commenters pointed out the problem is not AI-specific — people have always run Excel formulas or BI queries without understanding them; AI just lowers the barrier to doing so.</li>
+    </ul>
+  </details>
+</div>
+
+<!-- New Models & Releases -->
+<div class="category-header">New Models &amp; Releases</div>
+
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://twitter.com/techdevnotes/status/2045072883206991973">xAI has Released Grok 4.3 (beta)</a>
+    <span class="source-domain">(twitter.com)</span>
+  </div>
+  <div class="item-orig-title">xAI quietly releases Grok 4.3 beta with no model card, benchmarks, or official announcement</div>
+  <div class="item-meta">
+    <span class="pts">13 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47808588">6 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>xAI released a Grok 4.3 beta with no model card, no benchmarks, no usage examples, and no blog post.</li>
+      <li>The release comes amid speculation about the delayed Grok 5 launch, which Elon Musk had previously indicated was imminent.</li>
+      <li>The opaque release style contrasts with how other major labs handle model launches.</li>
+    </ul>
+    <div class="disc-header">
+      Discussion: <a href="https://news.ycombinator.com/item?id=47808588">HN thread</a>
+    </div>
+    <ul class="discussion-bullets">
+      <li>Community reaction was dismissive: no card, no benchmarks, no blog post means nothing to evaluate — &#34;nothing on the blog since the acquisition.&#34;</li>
+      <li>Confusion about naming: is Grok 4.3 a renamed Grok 5, or a separate model? No clarification from xAI.</li>
+      <li>One commenter drew the obvious Tesla FSD parallel: &#34;Tesla self-drive was also supposed to take over the world 5 years ago. Still waiting.&#34;</li>
     </ul>
   </details>
 </div>
@@ -450,89 +327,29 @@
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://localscribe.co/posts/uncanny-valley-and-rising-power-of-anti-ai-sentiment/">The Uncanny Valley and the Rising Power of Anti-AI Sentiment</a>
-    <span class="source-domain">(localscribe.co)</span>
+    <a class="item-title" href="https://electrek.co/2026/04/17/tesla-hw3-owners-be-patient-7-years-fsd/">Tesla tells HW3 owner to &#39;be patient&#39; after 7 years of waiting for FSD</a>
+    <span class="source-domain">(electrek.co)</span>
   </div>
-  <div class="item-orig-title">Anti-AI backlash is growing in consumer communities, driven by hardware prices and electricity bills</div>
+  <div class="item-orig-title">Tesla still asking HW3 owners to wait for FSD seven years after promises — a case study in AI overpromising</div>
   <div class="item-meta">
-    <span class="pts">39 points</span>
-    &nbsp;|&nbsp; Apr 20, 00:34 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47829058">63 comments</a>
+    <span class="pts">221 points</span>
+    &nbsp;|&nbsp; Apr 17, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47809347">211 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>The article argues that anti-AI sentiment is intensifying in consumer tech communities (PC gaming, hardware forums), moving from aesthetic objections to economic grievances.</li>
-      <li>GPU and RAM prices have doubled or quadrupled in two years as AI infrastructure investment competes with consumer demand.</li>
-      <li>The piece connects AI data center electricity consumption to rising utility bills for ordinary households.</li>
+      <li>Tesla customer support is still telling HW3 hardware owners to &#34;be patient&#34; regarding Full Self-Driving functionality — seven years after the feature was first promised.</li>
+      <li>HW3 vehicles were sold with FSD as a paid upgrade; Tesla has not delivered full functionality and has not offered refunds.</li>
+      <li>The story recurs periodically as a benchmark for the gap between AI capability promises and delivered reality.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47829058">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47809347">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Hardware forum users are angry: &#34;Every PC gamer forum is full of anti-AI hatred&#34; — people wanting to upgrade PCs are finding components have doubled in price.</li>
-      <li>Electricity price claims were fact-checked against EIA data: US electricity prices have risen ~7% since last year, which commenters debated is significant vs. baseline inflation.</li>
-      <li>Distinction made between abstract AI fears and concrete economic impacts — the latter is more politically potent and harder to dismiss as technophobia.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://michael.roth.rocks/research/543-hours/">543 Hours: What happens when AI runs while you sleep</a>
-    <span class="source-domain">(michael.roth.rocks)</span>
-  </div>
-  <div class="item-orig-title">Experiment claims 543 hours of continuous AI-assisted development; community questions authenticity</div>
-  <div class="item-meta">
-    <span class="pts">9 points</span>
-    &nbsp;|&nbsp; Apr 19, 16:22 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47825432">4 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>The post describes an experiment running AI coding agents continuously for 543 hours, claiming significant software development output during unsupervised operation.</li>
-      <li>The write-up is notable for not showing specific shipped code or concrete deliverables, instead focusing on the process narrative.</li>
-      <li>Raises questions about how to evaluate the output of extended autonomous AI coding sessions.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47825432">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Commenters suspected both the post and the experiment itself may be largely AI-generated — the writing structure and omission of actual output were cited as tell-tale signs.</li>
-      <li>The math drew skepticism: 543 hours divided across the claimed activity rate implies a prompt every 3 minutes around the clock, which commenters found implausible.</li>
-      <li>The post was described as a &#34;fever dream&#34; — an AI writing about AI usage in a way that is not human-parseable.</li>
-    </ul>
-  </details>
-</div>
-
-<!-- AI Coding & Development -->
-<div class="category-header">AI Coding &amp; Development</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://lemire.me/blog/2026/04/05/can-your-ai-rewrite-your-code-in-assembly/">Can your AI rewrite your code in assembly?</a>
-    <span class="source-domain">(lemire.me)</span>
-  </div>
-  <div class="item-orig-title">Daniel Lemire tests AI code rewriting capabilities at the assembly language level</div>
-  <div class="item-meta">
-    <span class="pts">6 points</span>
-    &nbsp;|&nbsp; Apr 20, 04:58 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47830543">2 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Performance researcher Daniel Lemire tests whether current AI models can effectively rewrite high-level code as optimized assembly language.</li>
-      <li>The experiment probes AI capability at the lowest level of code generation — useful for understanding real limits of AI-assisted systems programming.</li>
-      <li>Lemire&#39;s blog is known for rigorous performance benchmarking; the post treats AI rewriting as an empirical question rather than a capability claim.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47830543">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Limited discussion — one commenter noted the page returned 403 errors on non-mainstream browsers, suggesting overly aggressive bot-blocking that ironically blocks human readers.</li>
-      <li>The server-side 403 behavior was seen as an unintended side effect of AI traffic mitigation affecting legitimate users.</li>
+      <li>Thread quickly became a broader indictment of Musk: &#34;immense wealth from fraud lets you commit more fraud&#34; — reflecting sustained community frustration beyond just the FSD issue.</li>
+      <li>Discussion of whether Tesla&#39;s pattern of overpromising and not delivering constitutes actionable consumer fraud, and why regulators have not intervened.</li>
+      <li>Several commenters linked the FSD delay directly to the hardware architecture decision — HW3 may simply lack the compute for the neural net approach Tesla ultimately pursued.</li>
     </ul>
   </details>
 </div>

@@ -36,20 +36,20 @@
     <div id="wrap">
 
 <p style="font-size:8pt; color:#828282; margin-bottom:4px;">
-  April 20, 2026 &mdash; 19 AI-relevant posts from 100 total
+  April 20, 2026 &mdash; 9 AI-relevant posts from 80 total &mdash; data window: Apr 19, 2026
 </p>
 
 <div class="themes">
   <div class="themes-title">Key Themes</div>
   <ul>
-    <li>Anthropic dominated the day&#39;s AI discussions, with stories about Claude&#39;s evolving system prompts, contested account bans, and a stumbling corporate rollout at Uber — revealing friction between rapid model iteration and real-world deployment.</li>
-    <li>The gap between AI hype and measured impact is widening: a Fortune survey found CEOs broadly skeptical of AI&#39;s effect on productivity or employment, while anti-AI sentiment is gaining cultural momentum in gaming and hardware communities.</li>
-    <li>On-device inference is advancing: TRELLIS.2 image-to-3D runs natively on Apple Silicon, and AMD&#39;s ROCm on Strix Halo APUs is attracting developer attention as a local-inference alternative to cloud APIs.</li>
-    <li>Agent infrastructure tooling is maturing, with a &#34;prove you are a robot&#34; CAPTCHA for LLMs, a context-engineering reference implementation, and lightweight agent-to-agent communication libraries all appearing in a single day.</li>
-    <li>Privacy concerns around AI remain acute: Google Gemini&#39;s photo-scanning triggered EU regulatory pushback, and a user accused Claude Code of installing an unauthorized native-messaging bridge on their machine.</li>
+    <li>Anthropic faced a multi-front scrutiny day: Simon Willison documented divergence between Claude Opus 4.6 and 4.7 system prompts, a community site launched to aggregate user ban stories, and Uber&#39;s high-profile Anthropic investment was called out for producing generic, repetitive restaurant copy.</li>
+    <li>A 3.1GB Gemma 4 model running entirely in WebAssembly in the browser — with zero server-side inference — showed how capable on-device AI has become; Apple Silicon&#39;s unified memory architecture was separately explained as a key enabler of zero-copy GPU inference from WASM.</li>
+    <li>AI productivity skepticism deepened: a large CEO survey found no measurable employment or productivity impact, while the CAPTCHAs-for-agents post revealed that Claude immediately refuses the agent-verification challenge — drawing ironic reactions about AI safety posture in unexpected places.</li>
+    <li>Claude Brain, an open source MCP memory tool, sparked a broader debate about whether persistent cross-session context is actually desirable, with many developers preferring a clean slate.</li>
   </ul>
 </div>
 
+<!-- Claude / Anthropic -->
 <div class="category-header">Claude / Anthropic</div>
 
 <div class="item">
@@ -57,26 +57,26 @@
     <a class="item-title" href="https://simonwillison.net/2026/Apr/18/opus-system-prompt/">Changes in the system prompt between Claude Opus 4.6 and 4.7</a>
     <span class="source-domain">(simonwillison.net)</span>
   </div>
-  <div class="item-orig-title">Simon Willison diffs the Opus 4.6 vs 4.7 system prompts, exposing a new &ldquo;act now, clarify later&rdquo; directive</div>
+  <div class="item-orig-title">Simon Willison documents system prompt and tokenizer divergence between Opus 4.6 and 4.7</div>
   <div class="item-meta">
-    <span class="pts">274 points</span>
-    &nbsp;|&nbsp; Apr 19, 10:36 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47823270">163 comments</a>
+    <span class="pts">300 points</span>
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47823270">174 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Willison&#39;s post highlights a new &lt;acting_vs_clarifying&gt; section telling Claude to attempt tasks with minor unspecified details rather than asking for clarification first.</li>
-      <li>Opus 4.7 also gains a &lt;judgment_calls&gt; section nudging it to use its own discretion in ambiguous situations.</li>
-      <li>The changes represent a deliberate shift toward more autonomous, assertive agent behavior from Anthropic.</li>
+      <li>Simon Willison compared system prompts across Claude Opus versions, documenting behavioural directive changes and the now-confirmed ~1.46x tokenizer inflation in Opus 4.7.</li>
+      <li>Developers are building multi-provider pipelines specifically to reduce dependency on Anthropic after experiencing week-to-week limit variability.</li>
+      <li>The post became a focal point for frustration with Claude&#39;s inconsistency, driving concrete migration discussions.</li>
     </ul>
     <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=47823270">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Several developers are refactoring codebases to be model-agnostic (AGENTS.md files, swappable Claude/Gemini/Codex backends) as a hedge against unpredictable prompt behavior changes.</li>
-      <li>One user cancelled their Claude subscription over perceived week-to-week variability in limits and behavior, calling migration of hooks the hardest part.</li>
-      <li>Debate over whether the &#34;clarify less&#34; instruction is actually desirable — some developers enforce mandatory interview phases in their own prompts that now conflict with this system directive.</li>
+      <li>Developers described auditing codebases to identify Claude-specific coupling points and decoupling them — using OpenRouter or custom routing layers to swap providers.</li>
+      <li>One commenter cancelled their subscription and migrated to pi.ai; others described building OpenRouter-based loops that can one-shot problems across multiple providers.</li>
+      <li>Cross-provider agent issues surfaced: spawning Gemini or Codex sub-agents from Claude raises permission errors, making truly provider-agnostic agentic pipelines harder than expected.</li>
     </ul>
   </details>
 </div>
@@ -86,113 +86,26 @@
     <a class="item-title" href="https://bannedbyanthropic.com/">Banned by Anthropic?</a>
     <span class="source-domain">(bannedbyanthropic.com)</span>
   </div>
-  <div class="item-orig-title">Crowdsourced site collects accounts of Anthropic account terminations — authenticity quickly disputed</div>
+  <div class="item-orig-title">New community site aggregates Anthropic ban stories; authenticity of submissions questioned</div>
   <div class="item-meta">
-    <span class="pts">92 points</span>
-    &nbsp;|&nbsp; Apr 19, 22:33 UTC
+    <span class="pts">93 points</span>
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
     &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47828249">64 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>A new site aggregates user-submitted stories of unexpected Anthropic account bans, framing them as a transparency exercise.</li>
-      <li>The site requires a GitHub account to submit, and multiple submitters appear to have created fresh GitHub accounts specifically for this.</li>
-      <li>Content includes a mix of technical and non-technical users (e.g., someone researching the French Revolution).</li>
+      <li>A site launched to collect stories from users claiming to have been wrongly banned by Anthropic — requiring a GitHub account to submit.</li>
+      <li>Attracted dozens of submissions on launch day, covering a wide range of use cases.</li>
+      <li>Puts pressure on Anthropic to be more transparent about its enforcement process and appeal path.</li>
     </ul>
     <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=47828249">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Top comment immediately flagged suspicious patterns: uniform prose style and all GitHub accounts registered on April 18th.</li>
-      <li>Multiple commenters suspect the submissions are AI-generated or coordinated, citing implausible volume assembled so quickly.</li>
-      <li>A few users pushed back, arguing that non-developers would naturally have no prior GitHub presence and the cases themselves seem plausible.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://finance.yahoo.com/sectors/technology/articles/ubers-anthropic-ai-push-hits-a-wall/">Uber&#39;s Anthropic AI push hits a wall</a>
-    <span class="source-domain">(finance.yahoo.com)</span>
-  </div>
-  <div class="item-orig-title">Uber&#39;s broad Claude rollout is producing hallucinated restaurant data and generic copy that erodes user trust</div>
-  <div class="item-meta">
-    <span class="pts">90 points</span>
-    &nbsp;|&nbsp; Apr 19, 18:13 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47826328">93 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Uber Eats restaurant descriptions generated by Claude are riddled with errors — one listing claimed &#34;250,000+ toppings&#34; — and users find the copy indistinguishably homogenous.</li>
-      <li>The deployment represents one of the largest enterprise Claude integrations at scale, making the failure mode highly visible.</li>
-      <li>Anthropic&#39;s enterprise ambitions are under scrutiny as quality issues surface at a flagship customer.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47826328">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Users note that while individual descriptions seem passable, reading dozens in sequence reveals a numbing uniformity that feels worse than no copy at all.</li>
-      <li>A teacher describes similar fatigue from AI-generated student reports — the problem isn&#39;t any single bad output but the cumulative monotony.</li>
-      <li>Some commenters argue the fault lies with Uber&#39;s integration choices (no grounding, no human review) rather than Claude itself.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://simonwillison.net/2026/Apr/20/claude-token-counts/">Claude Token Counter, now with model comparisons</a>
-    <span class="source-domain">(simonwillison.net)</span>
-  </div>
-  <div class="item-orig-title">Willison&#39;s token counter tool reveals Opus 4.7 tokenizes text 46% more expensively than Opus 4.6</div>
-  <div class="item-meta">
-    <span class="pts">53 points</span>
-    &nbsp;|&nbsp; Apr 20, 00:56 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47829178">18 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>An updated web tool allows side-by-side token count comparisons across Claude models using the official Anthropic tokenizer API.</li>
-      <li>Opus 4.7&#39;s tokenizer produces 1.46x as many tokens as Opus 4.6 for the same input — a significant cost and context-window implication.</li>
-      <li>Anthropic has not publicly documented the tokenizer change or explained the motivation.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47829178">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Speculation that finer granularity tokenization could improve model performance for morphologically complex languages, though evidence for this remains thin.</li>
-      <li>One commenter notes Anthropic still doesn&#39;t publish the tokenizer directly, making cost estimation harder for developers budgeting API usage.</li>
-      <li>Discussion of whether LLMs can adequately handle redundant token encodings for the same semantic content — generally yes, but at a latency and cost penalty.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://www.thatprivacyguy.com/blog/anthropic-spyware/">Anthropic installed a spyware bridge on my machine?</a>
-    <span class="source-domain">(thatprivacyguy.com)</span>
-  </div>
-  <div class="item-orig-title">User discovers Claude Code wrote a native-messaging manifest to their system without explicit consent</div>
-  <div class="item-meta">
-    <span class="pts">46 points</span>
-    &nbsp;|&nbsp; Apr 20, 02:41 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47829800">14 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Claude Code installs a native-messaging host manifest on the user&#39;s machine to enable browser extension communication — standard Chrome native messaging architecture.</li>
-      <li>The user was alarmed to find the file, having not explicitly authorized it.</li>
-      <li>Others note the manifest itself is harmless boilerplate; the concern would only be valid if data were actually exfiltrated.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47829800">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Commenters quickly explained native messaging as a well-defined browser API — a manifest at that path is required infrastructure, not surveillance.</li>
-      <li>&#34;Spyware&#34; label called disingenuous until actual data exfiltration is demonstrated; &#34;bloatware&#34; or &#34;undisclosed install step&#34; would be more accurate.</li>
-      <li>Linked GitHub issue shows some users can&#39;t reproduce the auto-install, suggesting it may be triggered conditionally.</li>
+      <li>Skeptics noted most submitter GitHub accounts were created on April 18 with no prior activity — suggesting coordinated or synthetic submissions.</li>
+      <li>Defenders: non-technical users (e.g. someone studying the French Revolution) wouldn&#39;t have a prior GitHub account; the requirement may be filtering out legitimate cases.</li>
+      <li>Community interest focused less on the individual stories and more on whether Anthropic has any meaningful recourse process for affected users.</li>
     </ul>
   </details>
 </div>
@@ -202,61 +115,124 @@
     <a class="item-title" href="https://github.com/memvid/claude-brain">Claude Brain</a>
     <span class="source-domain">(github.com)</span>
   </div>
-  <div class="item-orig-title">GitHub repo proposes a persistent memory layer for Claude using structured markdown files in a git repo</div>
+  <div class="item-orig-title">Open source MCP tool gives Claude persistent memory across sessions via GitHub storage</div>
   <div class="item-meta">
     <span class="pts">33 points</span>
-    &nbsp;|&nbsp; Apr 19, 15:48 UTC
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
     &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47825158">22 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Stores conversation summaries, decisions, and task state in a structured git repo so Claude can &#34;remember&#34; across sessions.</li>
-      <li>Uses GitHub plugins / MCP integration to inject context from previous sessions into new conversations.</li>
-      <li>Addresses the fundamental statelesness problem of LLM conversations without requiring vendor-supplied memory features.</li>
+      <li>Claude Brain is an MCP-based tool that stores conversation context, tasks, and project decisions in a GitHub repository to give Claude persistent memory.</li>
+      <li>Targets the recurring frustration of re-explaining context at the start of every Claude session.</li>
+      <li>Uses structured markdown for memory, enabling human-readable audit of what Claude &#34;remembers.&#34;</li>
     </ul>
     <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=47825158">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Several simpler alternatives offered: plain markdown task/ticket files in-repo, CLAUDE.md, or just well-maintained commit messages.</li>
-      <li>One comment warns that <code>git config --global url.insteadOf</code> in the setup instructions would silently break SSH-based pushes to GitHub.</li>
-      <li>Noted that a near-identical concept was discussed 10 months ago and met with skepticism; interest has grown as Claude usage deepens.</li>
+      <li>Community pushback: a clean context is often preferable — especially when switching between unrelated tasks — and persistent memory can carry stale or incorrect assumptions forward.</li>
+      <li>A simpler alternative was shared: in-repo markdown ticket tracking with no MCP, no external service, just files.</li>
+      <li>A README suggestion to globally replace SSH Git URLs with HTTPS was flagged as potentially harmful advice that could silently break existing SSH-based remotes.</li>
     </ul>
   </details>
 </div>
 
-<div class="category-header">New Models &amp; Releases</div>
+<!-- AI Industry &amp; Business -->
+<div class="category-header">AI Industry &amp; Business</div>
 
 <div class="item">
   <div class="item-title-row">
-    <a class="item-title" href="https://github.com/shivampkumar/trellis-mac">Show HN: Run TRELLIS.2 Image-to-3D generation natively on Apple Silicon</a>
-    <span class="source-domain">(github.com)</span>
+    <a class="item-title" href="https://finance.yahoo.com/sectors/technology/articles/ubers-anthropic-ai-push-hits-223109852.html">Uber&#39;s Anthropic AI push hits a wall</a>
+    <span class="source-domain">(finance.yahoo.com)</span>
   </div>
-  <div class="item-orig-title">Native Apple Silicon port of TRELLIS.2 open-source image-to-3D model, requiring ~15 GB unified memory</div>
+  <div class="item-orig-title">Uber&#39;s Anthropic partnership yields generic AI restaurant copy that users find indistinguishable and tone-deaf</div>
   <div class="item-meta">
-    <span class="pts">137 points</span>
-    &nbsp;|&nbsp; Apr 20, 00:07 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47828896">21 comments</a>
+    <span class="pts">91 points</span>
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47826328">93 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>TRELLIS.2 is a multi-stage open-source model (1.3B shape + 1.3B texture flow sub-models) for generating 3D assets from a single image.</li>
-      <li>The Mac port runs without any cloud dependency; peak memory usage is ~15 GB, so 24 GB or 32 GB unified memory is recommended.</li>
-      <li>Geometry quality is competitive among open-source options; texturing has room for improvement.</li>
+      <li>Uber&#39;s significant Anthropic investment has produced AI-generated restaurant descriptions in Uber Eats that users report as samey and tone-deaf across all restaurant types.</li>
+      <li>Every restaurant gets the same formula: &#34;Authentic [cuisine] bursting with rich flavours&#34; — constrained generation at scale producing uniform mediocrity.</li>
+      <li>Raises the question of whether Uber is investing in the right AI features, versus more impactful UX improvements.</li>
     </ul>
     <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47828896">HN thread</a>
+      Discussion: <a href="https://news.ycombinator.com/item?id=47826328">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Community consensus: TRELLIS is in the &#34;usable&#34; tier for geometry but lags behind commercial services like Meshy for texture quality.</li>
-      <li>Developer confirmed sub-models currently load in parallel; sequential loading to fit 16 GB machines is a future option worth exploring.</li>
-      <li>Interest from game devs and 3D artists who want fully local, offline generation without usage fees.</li>
+      <li>The problem traced to the generation constraints: positive, non-spoilery, short, no memory of prior output — the same conditions that made early YouTube AI summaries repetitive.</li>
+      <li>AI-generated student reports were compared: &#34;the more you read, the more irritating it gets — you notice the AIisms and once you know them it gets very obvious.&#34;</li>
+      <li>Community verdict: $3.4B on blurbs that nobody asked for, when photos and delivery reliability matter more to conversion.</li>
     </ul>
   </details>
 </div>
 
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://fortune.com/article/why-do-thousands-of-ceos-believe-ai-not-having-impact-productivity-employment-study/">CEOs admit AI had no impact on employment or productivity</a>
+    <span class="source-domain">(fortune.com)</span>
+  </div>
+  <div class="item-orig-title">Large CEO survey finds no measurable AI impact on employment or productivity despite massive spend</div>
+  <div class="item-meta">
+    <span class="pts">80 points</span>
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47827985">73 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>A survey of thousands of CEOs found the majority reporting no measurable impact from AI on employment levels or productivity metrics.</li>
+      <li>Results contrast with scale of AI investment and the prevailing narrative of imminent AI-driven transformation.</li>
+      <li>Productivity gains from AI are likely real at maturity level 3+ but are consumed by inference costs and increased PR/review overhead at lower maturity levels.</li>
+    </ul>
+    <div class="disc-header">
+      Discussion: <a href="https://news.ycombinator.com/item?id=47827985">HN thread</a>
+    </div>
+    <ul class="discussion-bullets">
+      <li>A nuanced comment argued productivity per dollar doesn&#39;t improve until maturity level 3 — before that, inference costs and increased code review load from AI-generated PRs cancel out the gains.</li>
+      <li>One commenter: company went all-in on AI for engineers, stock fell 70% — &#34;naturally, we&#39;re pivoting to put AI front and center&#34; — a dark joke about AI as a narrative strategy rather than operational tool.</li>
+      <li>Blockchain/NFT comparisons made: skeptics questioned whether CEOs are following AI as a trend for optics rather than genuine value.</li>
+    </ul>
+  </details>
+</div>
+
+<!-- AI Products &amp; Tools -->
+<div class="category-header">AI Products &amp; Tools</div>
+
+<div class="item">
+  <div class="item-title-row">
+    <a class="item-title" href="https://teamchong.github.io/turboquant-wasm/draw.html">Show HN: Prompt-to-Excalidraw demo with Gemma 4 E2B in the browser (3.1GB)</a>
+    <span class="source-domain">(teamchong.github.io)</span>
+  </div>
+  <div class="item-orig-title">3.1GB Gemma 4 model runs entirely in-browser via WebAssembly, converting prompts to Excalidraw diagrams</div>
+  <div class="item-meta">
+    <span class="pts">124 points</span>
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47823460">47 comments</a>
+  </div>
+  <details>
+    <summary>key points &amp; discussion</summary>
+    <ul class="content-bullets">
+      <li>A Show HN demo runs Gemma 4 (3.1GB) fully client-side in WebAssembly with no server inference, converting text prompts to Excalidraw diagrams in the browser.</li>
+      <li>No API calls, no backend — demonstrates that capable diagram-generation AI is now feasible as a purely local tool.</li>
+      <li>Built using the E2B browser sandbox environment for the WASM runtime.</li>
+    </ul>
+    <div class="disc-header">
+      Discussion: <a href="https://news.ycombinator.com/item?id=47823460">HN thread</a>
+    </div>
+    <ul class="discussion-bullets">
+      <li>Commenters noted they already use Claude Code to generate Mermaid diagrams rendered headlessly via mmdc/puppeteer — a similar workflow with different tradeoffs (server-side vs. local).</li>
+      <li>SVG generation was suggested as a higher-quality alternative to Mermaid for complex diagrams — LLMs can produce animated SVGs directly.</li>
+      <li>The 3.1GB model size was cited as a milestone: browser-based inference of models this capable was not practical 18 months ago.</li>
+    </ul>
+  </details>
+</div>
+
+<!-- AI Infrastructure &amp; Compute -->
 <div class="category-header">AI Infrastructure &amp; Compute</div>
 
 <div class="item">
@@ -264,119 +240,31 @@
     <a class="item-title" href="https://abacusnoir.com/2026/04/18/zero-copy-gpu-inference-from-webassembly-on-apple-silicon/">Zero-Copy GPU Inference from WebAssembly on Apple Silicon</a>
     <span class="source-domain">(abacusnoir.com)</span>
   </div>
-  <div class="item-orig-title">Technique for running ML inference in the browser with zero CPU&#8594;GPU memory copies on Apple Silicon via WebGPU</div>
+  <div class="item-orig-title">How Apple Silicon&#39;s unified memory enables zero-copy GPU inference from WASM — and why x86 can&#39;t</div>
   <div class="item-meta">
-    <span class="pts">112 points</span>
-    &nbsp;|&nbsp; Apr 18, 22:46 UTC
+    <span class="pts">113 points</span>
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
     &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47820195">51 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Exploits Apple&#39;s Unified Memory Architecture — CPU and GPU share physical memory — to avoid costly data copies during WebAssembly inference.</li>
-      <li>Uses WebGPU&#39;s buffer mapping API to expose GPU-accessible pointers directly to WASM without intermediate copies.</li>
-      <li>Benchmarks show meaningful latency improvements for models running in Safari / Chrome on M-series Macs.</li>
+      <li>On Apple Silicon, CPU and GPU share physical memory — ML tensors need no copy operation to move between processor types, eliminating a key inference latency bottleneck.</li>
+      <li>WebAssembly inference runtimes can directly exploit this on Apple Silicon, reducing both latency and memory overhead significantly vs. traditional GPU inference pipelines.</li>
+      <li>The advantage is architectural and doesn&#39;t apply to x86 with discrete GPUs, which have separate VRAM requiring explicit DMA transfers.</li>
     </ul>
     <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=47820195">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Hardware veterans pushed back on the &#34;Apple Silicon uniquely enables this&#34; framing — x86 iGPUs and dGPUs have had dynamic shared-memory APIs for over a decade.</li>
-      <li>The real novelty is exposing this capability through the browser sandbox (WebGPU + WASM), not the underlying UMA architecture itself.</li>
-      <li>Discussion of why discrete GPUs still bring dedicated VRAM: lower-latency, higher-bandwidth memory that DDR can&#39;t match even without a physical copy.</li>
+      <li>x86 iGPU RAM reservation clarified: that fixed boot-time allocation is for the framebuffer, not true unified memory — architecturally different from Apple&#39;s implementation.</li>
+      <li>Discrete GPU VRAM exists because it&#39;s physically different memory optimised for GPU bandwidth — the latency to copy from host RAM to VRAM is the bottleneck that UMA eliminates.</li>
+      <li>Some pushback on Apple marketing framing: UMA is real and beneficial, but it&#39;s not as novel as Apple&#39;s presentation suggests — other vendors have had partial implementations for years.</li>
     </ul>
   </details>
 </div>
 
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://blog.marcoinacio.com/posts/my-first-impressions-rocm/">My first impressions on ROCm and Strix Halo</a>
-    <span class="source-domain">(blog.marcoinacio.com)</span>
-  </div>
-  <div class="item-orig-title">Developer first-look at AMD ROCm local inference on the new Strix Halo APU — promising but rough around the edges</div>
-  <div class="item-meta">
-    <span class="pts">55 points</span>
-    &nbsp;|&nbsp; Apr 18, 21:50 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47819823">51 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Strix Halo is AMD&#39;s high-end APU with 8-channel memory and an integrated RDNA 4 GPU — a local-inference competitor to Apple Silicon M-series chips.</li>
-      <li>ROCm support is functional but early; setup friction is higher than llama.cpp on Apple Silicon.</li>
-      <li>Performance on quantized models (Unsloth/Bartowski quants) is reportedly good once running.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47819823">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Experienced users warned against the article&#39;s recommended GGUF quantization workflow (an older HF script); current best practice uses llama.cpp&#39;s built-in quantization tools.</li>
-      <li>Community members who have run Strix Halo since mid-2025 report stable performance with &#34;Lemonade&#34; llama.cpp builds.</li>
-      <li>The 8-channel memory architecture (vs. 4-channel on consumer desktops) is highlighted as the key bandwidth advantage for large model inference.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="category-header">Google / DeepMind</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://teamchong.github.io/turboquant-wasm/draw.html">Show HN: Prompt-to-Excalidraw demo with Gemma 4 E2B in the browser (3.1GB)</a>
-    <span class="source-domain">(teamchong.github.io)</span>
-  </div>
-  <div class="item-orig-title">In-browser diagram generator running Gemma 4 (3.1 GB) via WebAssembly with no server round-trips</div>
-  <div class="item-meta">
-    <span class="pts">108 points</span>
-    &nbsp;|&nbsp; Apr 19, 11:17 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47823460">45 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Runs Google&#39;s Gemma 4 model entirely client-side in the browser using WebAssembly and WebGPU, with no API key or server required.</li>
-      <li>Takes a text prompt and generates an Excalidraw diagram; the 3.1 GB model download is cached after the first load.</li>
-      <li>Demonstrates the viability of running mid-sized instruction-tuned models fully in-browser for structured output tasks.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47823460">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Many commenters noted they already use Claude Code to generate Mermaid diagrams headlessly via puppeteer/mmdc — a server-side workflow that sidesteps the browser weight limit.</li>
-      <li>Discussion of whether structured diagram generation is truly a good LLM benchmark — Mermaid is &#34;just a list of nodes&#34; and most code-capable models handle it easily.</li>
-      <li>General enthusiasm for fully local browser inference as a privacy-preserving alternative to API-based tools.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://news.ycombinator.com/item?id=47825520">Show HN: Google Gemini Is Scanning Your Photos – and the EU Said No</a>
-    <span class="source-domain">(blog post)</span>
-  </div>
-  <div class="item-orig-title">Blog post alleges Google Gemini scans photos without adequate consent; EU regulators blocked the feature</div>
-  <div class="item-meta">
-    <span class="pts">51 points</span>
-    &nbsp;|&nbsp; Apr 19, 16:36 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47825520">18 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Post claims Google Gemini&#39;s photo-analysis feature has been scanning user images as part of on-device or cloud AI processing.</li>
-      <li>EU regulators have reportedly blocked the feature due to consent and data-protection concerns under GDPR.</li>
-      <li>Google&#39;s &#34;Don&#39;t Be Evil&#34; motto was formally retired in 2015, a point several commenters repeated.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47825520">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Top comment flagged the post as a blog opinion piece misfiled as a Show HN — several users requested the author resubmit as a standard link.</li>
-      <li>Despite the submission format dispute, the underlying concern about AI features processing sensitive personal data without explicit opt-in attracted real discussion.</li>
-      <li>EU&#39;s willingness to block AI photo-scanning features seen as a preview of broader AI Act enforcement to come.</li>
-    </ul>
-  </details>
-</div>
-
+<!-- AI Agents &amp; Automation -->
 <div class="category-header">AI Agents &amp; Automation</div>
 
 <div class="item">
@@ -384,233 +272,58 @@
     <a class="item-title" href="https://browser-use.com/posts/prove-you-are-a-robot">Prove you are a robot: CAPTCHAs for agents</a>
     <span class="source-domain">(browser-use.com)</span>
   </div>
-  <div class="item-orig-title">Browser-Use introduces &#34;agent CAPTCHAs&#34; — puzzles deliberately hard for LLMs but easy for humans</div>
+  <div class="item-orig-title">browser-use inverts the CAPTCHA concept: challenges designed to verify visitors ARE AI agents</div>
   <div class="item-meta">
-    <span class="pts">84 points</span>
-    &nbsp;|&nbsp; Apr 15, 17:03 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47781950">42 comments</a>
+    <span class="pts">93 points</span>
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
+    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47781950">44 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Inverts the traditional CAPTCHA: instead of filtering out bots, this mechanism filters out LLM agents while letting human users pass.</li>
-      <li>Puzzles use obfuscated text, mixed scripts (CJK characters in math problems), and deliberate formatting noise to trip up LLM parsers.</li>
-      <li>Intended for sites that want to preserve human-only interaction zones alongside agent-accessible zones.</li>
+      <li>browser-use launched an inverted CAPTCHA concept: challenges that verify a visitor IS an AI agent, enabling agent-specific API access gating.</li>
+      <li>Uses obfuscated math problems with CJK numeral characters mixed with ASCII noise — exploiting differences in how agents and humans process mixed-script text.</li>
+      <li>Positions agent identity verification as emerging infrastructure as autonomous browser traffic grows.</li>
     </ul>
     <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=47781950">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Claude Code immediately refuses to interact with the endpoint, citing a usage policy violation — a notable example of safety guardrails activating on ambiguous content.</li>
-      <li>One tester&#39;s agent received a Chinese-character math puzzle, misidentified the characters as Japanese, and still solved it correctly despite the obfuscation.</li>
-      <li>Linguistic sidebar: the CJK numerals used are Chinese in origin and retain their original meanings in both Chinese and Japanese.</li>
+      <li>Ironic finding: Claude immediately refuses the challenge with a usage policy violation error — while Gemma 4 solved it but got stuck in an infinite loop, and other agents parsed and answered correctly.</li>
+      <li>One commenter called it more compelling evidence of AI intelligence than ARC-3 benchmark performance — solving obfuscated multilingual arithmetic is qualitatively different from pattern matching.</li>
+      <li>Linguistic note: the &#34;Japanese&#34; number characters used are historically Chinese characters adopted into Japanese — calling them Japanese without kanji/hiragana context is imprecise.</li>
     </ul>
   </details>
 </div>
 
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://github.com/outcomeops/context-engineering">Show HN: A working reference implementation of context engineering</a>
-    <span class="source-domain">(github.com)</span>
-  </div>
-  <div class="item-orig-title">Reference repo demonstrating context-engineering patterns for LLM applications, with an enforcement layer</div>
-  <div class="item-meta">
-    <span class="pts">41 points</span>
-    &nbsp;|&nbsp; Apr 17, 18:20 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47808956">11 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Implements structured patterns for managing what context an LLM receives: system prompts, retrieval, memory injection, and output grounding.</li>
-      <li>Includes an &#34;enforcement layer&#34; intended to validate structural and syntactic correctness of model outputs at runtime.</li>
-      <li>Positioned as a practical reference, not a framework — copy what you need.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47808956">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Reviewers felt the enforcement layer is underdeveloped — the hardest parts (grounding checks, semantic validity) are barely addressed.</li>
-      <li>Key critique: most context engineering guides describe what should happen, but don&#39;t actually prevent bad outputs at runtime.</li>
-      <li>One developer joked they&#39;ll be left organizing data and docs while AI does all the interesting coding work.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://juanpabloaj.com/2026/04/16/a-lightweight-way-to-make-agents-talk-without-paying-for-api-usage/">Show HN: A lightweight way to make agents talk without paying for API usage</a>
-    <span class="source-domain">(juanpabloaj.com)</span>
-  </div>
-  <div class="item-orig-title">Minimal agent-to-agent communication via shared local files, avoiding API token costs</div>
-  <div class="item-meta">
-    <span class="pts">24 points</span>
-    &nbsp;|&nbsp; Apr 20, 00:21 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47828968">6 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Proposes using shared local files as agent inboxes and task queues, enabling multi-agent coordination without additional API calls.</li>
-      <li>Keeps inter-agent communication latency-free and cost-free when agents share a filesystem.</li>
-      <li>Targets developers running agents locally who want orchestration without paying per-message API fees.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47828968">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Commenters pointed out Claude Code&#39;s Agent Teams feature already does exactly this (shared file inboxes, tmux/iTerm2 integration) as part of the subscription.</li>
-      <li>Cursor and OpenCode users noted that switching the LLM mid-conversation achieves a similar multi-agent effect with zero extra tooling.</li>
-      <li>Limited discussion — a small but focused thread.</li>
-    </ul>
-  </details>
-</div>
+<!-- AI in Society -->
+<div class="category-header">AI in Society</div>
 
 <div class="item">
   <div class="item-title-row">
     <a class="item-title" href="https://michael.roth.rocks/research/543-hours/">543 Hours: What happens when AI runs while you sleep</a>
     <span class="source-domain">(michael.roth.rocks)</span>
   </div>
-  <div class="item-orig-title">Experiment log: leaving an AI agent running autonomously for 543 hours to ship software</div>
+  <div class="item-orig-title">Claimed 543-hour continuous AI coding experiment draws skepticism — community suspects AI-generated writeup</div>
   <div class="item-meta">
     <span class="pts">9 points</span>
-    &nbsp;|&nbsp; Apr 19, 16:22 UTC
+    &nbsp;|&nbsp; Apr 19, 2026 UTC
     &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47825432">4 comments</a>
   </div>
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Author claims to have run an AI agent continuously for 543 hours, intervening only via brief prompts.</li>
-      <li>Post claims substantial software was &#34;shipped&#34; but does not show concrete artifacts or output.</li>
-      <li>Writing style and structure raised authenticity concerns among commenters.</li>
+      <li>A post claims the author ran AI coding agents continuously for 543 hours, producing significant software development output unsupervised.</li>
+      <li>No specific shipped code or concrete deliverables are shown — the post focuses entirely on process narrative.</li>
+      <li>The writing structure itself reads as AI-generated, creating a recursive credibility problem.</li>
     </ul>
     <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=47825432">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Top commenter skeptical the post itself is human-written; called the narrative structure and omissions unconvincing.</li>
-      <li>Math check: claimed prompt frequency implies one intervention every 3 minutes around the clock — commenters found this implausible for a solo operator.</li>
-      <li>Limited discussion — 4 comments total.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="category-header">AI in Society</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://fortune.com/article/why-do-thousands-of-ceos-believe-ai-hasnt-impacted-their-employment-or-productivity/">CEOs admit AI had no impact on employment or productivity</a>
-    <span class="source-domain">(fortune.com)</span>
-  </div>
-  <div class="item-orig-title">Fortune survey: most CEOs report AI has not moved the needle on headcount or measurable productivity</div>
-  <div class="item-meta">
-    <span class="pts">78 points</span>
-    &nbsp;|&nbsp; Apr 19, 21:56 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47827985">70 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>A large survey of CEOs finds the majority see no measurable change in employment levels or productivity attributable to AI adoption so far.</li>
-      <li>Despite this, investment and public positioning around AI continues to intensify, creating a disconnect between reported impact and strategic behavior.</li>
-      <li>The finding echoes earlier skepticism from economists about AI&#39;s near-term macroeconomic effects.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47827985">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>One developer&#39;s company went &#34;all-in on AI&#34; in engineering while its stock fell 70% — and is now pivoting the product to be AI-first.</li>
-      <li>Counter-argument: stock price reacts to broad market trends quickly but product-level AI impact shows up in revenue 12-18 months later; the metrics aren&#39;t comparable yet.</li>
-      <li>Several commenters drew parallels to blockchain pivots of 2017-2018, questioning whether CEOs are chasing narrative rather than ROI.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://localscribe.co/posts/uncanny-valley-and-rising-power-of-anti-ai-sentiment/">The Uncanny Valley and the Rising Power of Anti-AI Sentiment</a>
-    <span class="source-domain">(localscribe.co)</span>
-  </div>
-  <div class="item-orig-title">Essay argues anti-AI backlash is intensifying in PC hardware and gaming communities, driven by real cost impacts</div>
-  <div class="item-meta">
-    <span class="pts">39 points</span>
-    &nbsp;|&nbsp; Apr 20, 00:34 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47829058">62 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Essay documents a sharp rise in anti-AI sentiment across PC hardware review forums and Reddit, where GPU and RAM prices have doubled or quadrupled in months.</li>
-      <li>Argues that AI data center demand is the perceived culprit for consumer hardware price inflation, even where causal evidence is ambiguous.</li>
-      <li>Frames the backlash as the &#34;uncanny valley&#34; of AI — close enough to useful to be in daily contact, far enough from genuinely good to irritate constantly.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47829058">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Most-upvoted comment: &#34;I want to use AI to do my job. I want to use AI to do your job. I don&#39;t want someone else to use AI to do my job.&#34; — widely seen as the clearest distillation of the sentiment.</li>
-      <li>The correlation between AI data center buildout and consumer electricity price rises is disputed; one commenter linked EU electricity data showing the link is weak so far.</li>
-      <li>Commenters note the hypocrisy is universal: graphic designers say AI can&#39;t do design but use it for coding; game devs say AI can&#39;t program but use it for art assets.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="category-header">AI Policy, Legal &amp; Regulation</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://www.swiss-ai.org">Swiss AI Initiative (2023)</a>
-    <span class="source-domain">(swiss-ai.org)</span>
-  </div>
-  <div class="item-orig-title">Switzerland&#39;s national AI initiative resurfaces: open multilingual LLMs with 1800+ language pre-training data</div>
-  <div class="item-meta">
-    <span class="pts">43 points</span>
-    &nbsp;|&nbsp; Apr 19, 22:58 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47828444">14 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Swiss AI Initiative has published Apertus — open-source 8B and 70B base and instruction-tuned LLMs with a focus on multilingual coverage.</li>
-      <li>Pre-training data covers 1800+ languages with 40% non-English content, a notably different training emphasis from US-centric models.</li>
-      <li>Models are Apache/open-licensed; no commercial restrictions.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47828444">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Community reports the initiative has been actively updated since 2023, making the &#34;(2023)&#34; year tag somewhat misleading.</li>
-      <li>Quality benchmarks available in the paper; focus on multilingual parity rather than English-only leaderboard optimization.</li>
-      <li>Limited discussion — a small, technically curious thread.</li>
-    </ul>
-  </details>
-</div>
-
-<div class="category-header">AI Coding &amp; Development</div>
-
-<div class="item">
-  <div class="item-title-row">
-    <a class="item-title" href="https://lemire.me/blog/2026/04/05/can-your-ai-rewrite-your-code-in-assembly/">Can your AI rewrite your code in assembly?</a>
-    <span class="source-domain">(lemire.me)</span>
-  </div>
-  <div class="item-orig-title">Daniel Lemire tests LLM-generated assembly code for performance-critical functions</div>
-  <div class="item-meta">
-    <span class="pts">5 points</span>
-    &nbsp;|&nbsp; Apr 20, 04:58 UTC
-    &nbsp;|&nbsp; <a class="comments-link" href="https://news.ycombinator.com/item?id=47830543">2 comments</a>
-  </div>
-  <details>
-    <summary>key points &amp; discussion</summary>
-    <ul class="content-bullets">
-      <li>Lemire explores whether current LLMs can produce correct, optimized x86 assembly for performance-sensitive routines.</li>
-      <li>Tests span simple numeric kernels; results are mixed — models can produce syntactically valid assembly but optimization quality varies.</li>
-      <li>Raises questions about the ceiling of AI-assisted low-level programming.</li>
-    </ul>
-    <div class="disc-header">
-      Discussion: <a href="https://news.ycombinator.com/item?id=47830543">HN thread</a>
-    </div>
-    <ul class="discussion-bullets">
-      <li>Limited discussion — 2 comments; one user reported the blog page returning a 403 on non-mainstream browsers.</li>
+      <li>Commenters suspected both the post and the experiment are largely AI-generated: &#34;the whole structure seems to be AI — it&#39;s not human-parseable.&#34;</li>
+      <li>The math was scrutinised: 543 hours at the claimed activity rate implies a prompt every 3 minutes around the clock — &#34;this is just nonsense, the fever dream of someone in a large language model.&#34;</li>
+      <li>The omission of any actual shipped output was called the most damning detail: &#34;demonstrating a profound misunderstanding of what &#39;shipped&#39; means.&#34;</li>
     </ul>
   </details>
 </div>
