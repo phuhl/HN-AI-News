@@ -7,9 +7,17 @@ argument-hint: [YYYY-MM-DD or "today"]
 
 # HN AI News Digest
 
-Compile an executive summary of AI-relevant Hacker News posts, organized into thematic categories with structured summaries and discussion highlights. Produce both a markdown summary in the conversation AND an HTML file for GitHub Pages.
+Compile an executive summary of AI-relevant Hacker News posts, organized into thematic categories with structured summaries and discussion highlights. Output is an HTML file for GitHub Pages — do not echo the digest content into the conversation.
 
-## Step 1: Fetch posts
+## Step 1: Check Python dependencies
+
+Before doing anything else, verify the required packages are available and install them if missing:
+
+```bash
+python3 -c "import requests, bs4" 2>/dev/null || pip3 install --break-system-packages requests beautifulsoup4
+```
+
+## Step 2: Fetch posts
 
 Run the fetch script to get all HN posts for the target day. If the user provided a date argument, use it; otherwise default to today.
 
@@ -18,9 +26,9 @@ Save the output to a temp file for processing:
 python3 {{SKILL_DIR}}/scripts/fetch_hn_posts.py --day <YYYY-MM-DD> --min-points 3 > /tmp/hn_posts.json 2>/tmp/hn_fetch.log
 ```
 
-The script scrapes hckrnews.com for item IDs, enriches via the HN Algolia API, and has retry with exponential backoff for 429/5xx. If it fails, fall back to WebFetch on `https://hckrnews.com/`.
+The script fetches from hckrnews.com — HTML for recent days (last ~2 days), static `.js` day files for older dates. The digest named `YYYY-MM-DD` covers the 24 hours **before** that date (i.e. the data day is `date - 1`). If it fails, fall back to WebFetch on `https://hckrnews.com/`.
 
-## Step 2: Identify AI-relevant posts
+## Step 3: Identify AI-relevant posts
 
 Read `/tmp/hn_posts.json` and filter for AI-relevant posts. A post is AI-relevant if its title or topic relates to:
 
@@ -40,7 +48,7 @@ Read `/tmp/hn_posts.json` and filter for AI-relevant posts. A post is AI-relevan
 
 Be inclusive rather than exclusive. When in doubt, include the post.
 
-## Step 3: Fetch discussion details for AI-relevant posts
+## Step 4: Fetch discussion details for AI-relevant posts
 
 For each AI-relevant post, fetch the HN discussion page to get comment content:
 
@@ -53,7 +61,7 @@ The script uses adaptive rate limiting — it starts with 3s between requests an
 
 If there are many AI-relevant posts (>20), prioritize by points. For posts with very few comments (<3), skip fetching and note "Limited discussion."
 
-## Step 4: Categorize posts
+## Step 5: Categorize posts
 
 Assign each AI-relevant post to exactly one category. Drop empty categories from output:
 
@@ -76,29 +84,11 @@ Assign each AI-relevant post to exactly one category. Drop empty categories from
 
 Company-specific categories take priority when applicable.
 
-## Step 5: Output
+## Step 6: Output
 
-Produce TWO outputs:
+Write the HTML day file and regenerate the index. Do **not** print the digest content into the conversation — the HTML file is the only output.
 
-### Output A: Markdown in conversation
-
-Print the digest directly in the conversation using this format per post:
-
-```
-**<Summary headline>** (<original title> - <date, time of posting>) [<X> pts, <Y> comments]
-- <bullet 1: what it is / what happened>
-- <bullet 2: key detail or finding>
-- <bullet 3: why it matters or what's notable>
-
-Discussion (<HN URL>):
-- <key discussion point 1>
-- <key discussion point 2>
-- <key discussion point 3>
-```
-
-End with a `## Key Themes` section (3-5 sentences).
-
-### Output B: HTML day file + index
+### HTML day file + index
 
 **0. Shared stylesheet** — sync `{{SKILL_DIR}}/assets/style.css` to `<workspace>/style.css` so the latest styles are always in place. Use the `Read` tool to read `{{SKILL_DIR}}/assets/style.css`, then use the `Write` tool to write its contents to `<workspace>/style.css`. Do **not** use a Bash `cp` command for this step — it passes a `.claude/` path through the shell and triggers an unnecessary security prompt.
 
@@ -198,6 +188,5 @@ Push only if the user explicitly asks.
 
 ## Notes
 
-- The scripts require `requests` and `beautifulsoup4`. If missing: `pip3 install --break-system-packages requests beautifulsoup4`
 - For busy days (>30 AI posts), focus on posts with 20+ points.
 - If scripts fail completely, fall back to WebFetch on `https://hckrnews.com/` and individual discussion pages.

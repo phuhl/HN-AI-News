@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
 """
-Fetch Hacker News posts from hckrnews.com for a given day, enriched with
-metadata from the HN Algolia API (points, comments, time).
+Fetch Hacker News posts for a given day via hckrnews.com.
 
-Outputs JSON with post metadata.
-Includes retry logic with exponential backoff for 429/5xx errors.
+Source priority:
+  1. hckrnews.com HTML — used for recent days (the page shows the current
+     and previous day). Parses the <ul id="YYYYMMDD"> section for the
+     target date.
+  2. hckrnews.com/data/YYYYMMDD.js — static JSON file, used for older days
+     when the target date is not present in the HTML.
+
+In both cases, a 24-hour date filter is applied: only posts whose hckrnews
+timestamp falls within [target_date 00:00 UTC, target_date+1 00:00 UTC) are
+kept. This guards against edge cases where hckrnews includes posts from
+neighbouring days.
+
+Outputs a JSON array of post metadata to stdout.
 
 Usage:
     python3 fetch_hn_posts.py [--day YYYY-MM-DD] [--min-points N]
@@ -12,10 +22,9 @@ Usage:
 
 import argparse
 import json
-import re
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 
 import requests
 from bs4 import BeautifulSoup
@@ -24,6 +33,10 @@ DEFAULT_TIMEOUT = 30
 MAX_RETRIES = 7
 INITIAL_BACKOFF = 3
 
+
+# ---------------------------------------------------------------------------
+# HTTP helpers
+# ---------------------------------------------------------------------------
 
 def fetch_with_retry(url, max_retries=MAX_RETRIES, timeout=DEFAULT_TIMEOUT):
     """Fetch a URL with exponential backoff on 429 and 5xx errors."""
@@ -51,7 +64,7 @@ def fetch_with_retry(url, max_retries=MAX_RETRIES, timeout=DEFAULT_TIMEOUT):
                 backoff *= 2
                 last_error = f"HTTP {resp.status_code}"
                 continue
-            print(f"  [error] HTTP {resp.status_code} for {url}", file=sys.stderr)
+            print(f"  [warn] HTTP {resp.status_code} for {url}", file=sys.stderr)
             return None
         except requests.exceptions.RequestException as e:
             print(
@@ -66,121 +79,192 @@ def fetch_with_retry(url, max_retries=MAX_RETRIES, timeout=DEFAULT_TIMEOUT):
     return None
 
 
-def extract_item_id(url):
-    """Extract HN item ID from a URL."""
-    m = re.search(r"item\?id=(\d+)", url)
-    return m.group(1) if m else None
+# ---------------------------------------------------------------------------
+# Date helpers
+# ---------------------------------------------------------------------------
+
+def day_window(day_str):
+    """
+    Return (data_day_str, start_epoch, end_epoch) for the 24-hour UTC window
+    that ends at midnight of day_str — i.e. the day BEFORE day_str.
+
+    A digest file named 2026-04-20 covers the 24 hours of 2026-04-19:
+      "2026-04-20" -> data_day="2026-04-19", window [Apr19 00:00, Apr20 00:00)
+    """
+    end_dt = datetime.strptime(day_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+    start_dt = end_dt - timedelta(days=1)
+    data_day_str = start_dt.strftime("%Y-%m-%d")
+    return data_day_str, int(start_dt.timestamp()), int(end_dt.timestamp())
 
 
-def fetch_hckrnews_ids(day_str):
-    """Scrape hckrnews.com to get the list of HN item IDs for a given day."""
-    url = f"https://hckrnews.com/?day={day_str}"
-    print(f"  Fetching hckrnews.com for {day_str}...", file=sys.stderr)
+def epoch_to_iso(epoch):
+    """Convert an integer Unix timestamp to an ISO-8601 UTC string."""
+    try:
+        return datetime.fromtimestamp(int(epoch), tz=timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
+    except (TypeError, ValueError):
+        return ""
+
+
+def in_window(epoch, start, end):
+    """Return True if epoch (int or str) falls within [start, end)."""
+    try:
+        return start <= int(epoch) < end
+    except (TypeError, ValueError):
+        return False
+
+
+# ---------------------------------------------------------------------------
+# Source 1: hckrnews.com HTML (recent days)
+# ---------------------------------------------------------------------------
+
+def fetch_from_html(day_str, start_epoch, end_epoch):
+    """
+    Scrape hckrnews.com and return posts for the target day, or [] if the
+    target date is not present in the page.
+
+    The page contains one <ul class="entries" id="YYYYMMDD"> per day.
+    Each <li> has:
+      - id="<hn_item_id>"
+      - <a class="hn" data-date="<epoch>">  (hckrnews ranking timestamp)
+      - <span class="comments">N</span>
+      - <span class="points">N</span>
+      - <a class="link" href="<source_url>">Title <span class="source">...</span></a>
+    """
+    compact = day_str.replace("-", "")  # "2026-04-18" -> "20260418"
+    url = "https://hckrnews.com/"
+    print(f"  Fetching hckrnews.com HTML...", file=sys.stderr)
     resp = fetch_with_retry(url)
     if not resp:
         return []
 
     soup = BeautifulSoup(resp.text, "html.parser")
-    item_ids = []
-    seen = set()
-
-    for link in soup.find_all("a"):
-        href = link.get("href", "")
-        item_id = extract_item_id(href)
-        if item_id and item_id not in seen:
-            seen.add(item_id)
-            item_ids.append(item_id)
-
-    print(f"  Found {len(item_ids)} item IDs from hckrnews.com", file=sys.stderr)
-    return item_ids
-
-
-def fetch_algolia_metadata(item_ids):
-    """
-    Fetch metadata for HN items via the Algolia API.
-    Batches requests to avoid rate limits.
-    Returns dict mapping item_id -> metadata.
-    """
-    metadata = {}
-    batch_size = 20  # Algolia can handle multiple IDs via tags
-
-    for i in range(0, len(item_ids), batch_size):
-        batch = item_ids[i : i + batch_size]
-        # Use Algolia search with story IDs
-        tags = ",".join(f"story_{iid}" for iid in batch)
-        url = f"https://hn.algolia.com/api/v1/search?tags=({tags})&hitsPerPage={len(batch)}"
-
+    day_ul = soup.find("ul", id=compact)
+    if not day_ul:
         print(
-            f"  Fetching Algolia batch {i // batch_size + 1} "
-            f"({len(batch)} items)...",
+            f"  Date {day_str} not found in hckrnews HTML (probably too old).",
             file=sys.stderr,
         )
-        resp = fetch_with_retry(url)
-        if not resp:
-            # Fallback: fetch individually
-            for iid in batch:
-                individual_url = f"https://hn.algolia.com/api/v1/items/{iid}"
-                print(f"  Fetching individual item {iid}...", file=sys.stderr)
-                iresp = fetch_with_retry(individual_url)
-                if iresp:
-                    try:
-                        item = iresp.json()
-                        metadata[str(item.get("id", iid))] = {
-                            "title": item.get("title", ""),
-                            "points": item.get("points", 0),
-                            "num_comments": len(item.get("children", [])),
-                            "url": item.get("url", ""),
-                            "created_at": item.get("created_at", ""),
-                            "author": item.get("author", ""),
-                        }
-                    except (json.JSONDecodeError, KeyError):
-                        pass
-                time.sleep(0.5)
+        return []
+
+    posts = []
+    skipped = 0
+    for li in day_ul.find_all("li", class_="entry"):
+        item_id = li.get("id", "")
+        if not item_id:
             continue
 
-        try:
-            data = resp.json()
-            for hit in data.get("hits", []):
-                oid = str(hit.get("objectID", ""))
-                metadata[oid] = {
-                    "title": hit.get("title", ""),
-                    "points": hit.get("points", 0),
-                    "num_comments": hit.get("num_comments", 0),
-                    "url": hit.get("url", ""),
-                    "created_at": hit.get("created_at", ""),
-                    "author": hit.get("author", ""),
-                }
-        except (json.JSONDecodeError, KeyError) as e:
-            print(f"  [warn] Failed to parse Algolia response: {e}", file=sys.stderr)
+        hn_a = li.find("a", class_="hn")
+        link_a = li.find("a", class_="link")
+        if not hn_a or not link_a:
+            continue
 
-        time.sleep(0.5)
+        raw_epoch = hn_a.get("data-date", "")
 
-    return metadata
+        # 24-hour sanity filter
+        if not in_window(raw_epoch, start_epoch, end_epoch):
+            skipped += 1
+            continue
+
+        # Extract title (strip the nested <span class="source"> text)
+        source_span = link_a.find("span", class_="source")
+        source_text = source_span.get_text(strip=True) if source_span else ""
+        if source_span:
+            source_span.extract()
+        title = link_a.get_text(strip=True)
+
+        comments_span = li.find("span", class_="comments")
+        points_span = li.find("span", class_="points")
+
+        def to_int(span):
+            try:
+                return int(span.get_text(strip=True))
+            except (AttributeError, ValueError):
+                return 0
+
+        posts.append({
+            "item_id": item_id,
+            "title": title,
+            "hn_url": f"https://news.ycombinator.com/item?id={item_id}",
+            "source_url": link_a.get("href", ""),
+            "points": to_int(points_span),
+            "num_comments": to_int(comments_span),
+            "created_at": epoch_to_iso(raw_epoch),
+            "author": "",
+        })
+
+    if skipped:
+        print(f"  Skipped {skipped} entries outside 24h window.", file=sys.stderr)
+    print(f"  Found {len(posts)} posts from hckrnews HTML.", file=sys.stderr)
+    return posts
 
 
-def fetch_hn_front_page(day_str):
+# ---------------------------------------------------------------------------
+# Source 2: hckrnews.com/data/YYYYMMDD.js (older days)
+# ---------------------------------------------------------------------------
+
+def fetch_from_js_file(day_str, start_epoch, end_epoch):
     """
-    Fallback: use HN's front page API endpoint for a given day.
+    Fetch the static hckrnews day file and return posts.
+    Returns [] if the file does not exist (404) or cannot be parsed.
+
+    Each JSON entry has:
+      id, link_text, link, submitter, time (epoch str), date (epoch int),
+      points, comments, dead, type
     """
-    url = f"https://news.ycombinator.com/front?day={day_str}"
-    print(f"  Fetching HN front page for {day_str}...", file=sys.stderr)
+    compact = day_str.replace("-", "")
+    url = f"https://hckrnews.com/data/{compact}.js"
+    print(f"  Fetching hckrnews day file {compact}.js...", file=sys.stderr)
     resp = fetch_with_retry(url)
     if not resp:
         return []
 
-    soup = BeautifulSoup(resp.text, "html.parser")
-    item_ids = []
-    seen = set()
+    try:
+        entries = resp.json()
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"  [warn] Failed to parse {url}: {e}", file=sys.stderr)
+        return []
 
-    for row in soup.select("tr.athing"):
-        item_id = row.get("id", "")
-        if item_id and item_id not in seen:
-            seen.add(item_id)
-            item_ids.append(item_id)
+    posts = []
+    skipped = 0
+    for entry in entries:
+        if entry.get("dead"):
+            continue
+        if entry.get("type") not in ("story", "ask", "show", None):
+            continue
+        item_id = str(entry.get("id", ""))
+        if not item_id:
+            continue
 
-    print(f"  Found {len(item_ids)} items from HN front page", file=sys.stderr)
-    return item_ids
+        # hckrnews uses 'date' as its ranking/logging timestamp
+        raw_epoch = entry.get("date") or entry.get("time")
 
+        # 24-hour sanity filter
+        if not in_window(raw_epoch, start_epoch, end_epoch):
+            skipped += 1
+            continue
+
+        posts.append({
+            "item_id": item_id,
+            "title": entry.get("link_text", f"[Item {item_id}]"),
+            "hn_url": f"https://news.ycombinator.com/item?id={item_id}",
+            "source_url": entry.get("link", ""),
+            "points": entry.get("points", 0) or 0,
+            "num_comments": entry.get("comments", 0) or 0,
+            "created_at": epoch_to_iso(raw_epoch),
+            "author": entry.get("submitter", ""),
+        })
+
+    if skipped:
+        print(f"  Skipped {skipped} entries outside 24h window.", file=sys.stderr)
+    print(f"  Found {len(posts)} posts from hckrnews day file.", file=sys.stderr)
+    return posts
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(description="Fetch HN posts for a day")
@@ -188,49 +272,40 @@ def main():
     parser.add_argument("--min-points", type=int, default=0, help="Minimum points")
     args = parser.parse_args()
 
-    day_str = args.day or datetime.now().strftime("%Y-%m-%d")
+    day_str = args.day or datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+    data_day_str, start_epoch, end_epoch = day_window(day_str)
 
-    # Step 1: Get item IDs from hckrnews.com
-    item_ids = fetch_hckrnews_ids(day_str)
+    print(
+        f"  Digest date: {day_str}  "
+        f"Data window: {data_day_str} [{start_epoch}, {end_epoch})",
+        file=sys.stderr,
+    )
 
-    # Fallback to HN front page
-    if not item_ids:
-        item_ids = fetch_hn_front_page(day_str)
+    # Step 1: Try HTML (covers the 2 most recent days on hckrnews)
+    posts = fetch_from_html(data_day_str, start_epoch, end_epoch)
 
-    if not item_ids:
-        print("No posts found.", file=sys.stderr)
+    # Step 2: Fall back to static JS file (covers older days)
+    if not posts:
+        print(
+            f"  HTML did not have {data_day_str}, trying JS file...",
+            file=sys.stderr,
+        )
+        posts = fetch_from_js_file(data_day_str, start_epoch, end_epoch)
+
+    if not posts:
+        print(f"  No posts found for {day_str}.", file=sys.stderr)
         json.dump([], sys.stdout)
         sys.exit(0)
 
-    # Step 2: Enrich with Algolia metadata
-    print(f"  Enriching {len(item_ids)} items via Algolia API...", file=sys.stderr)
-    metadata = fetch_algolia_metadata(item_ids)
-
-    # Step 3: Build output
-    posts = []
-    for iid in item_ids:
-        meta = metadata.get(iid, {})
-        title = meta.get("title", f"[Item {iid}]")
-        points = meta.get("points", 0) or 0
-        num_comments = meta.get("num_comments", 0) or 0
-        source_url = meta.get("url", "")
-        created_at = meta.get("created_at", "")
-        author = meta.get("author", "")
-
-        posts.append({
-            "item_id": iid,
-            "title": title,
-            "hn_url": f"https://news.ycombinator.com/item?id={iid}",
-            "source_url": source_url,
-            "points": points,
-            "num_comments": num_comments,
-            "created_at": created_at,
-            "author": author,
-        })
-
     # Filter by minimum points
     if args.min_points > 0:
+        before = len(posts)
         posts = [p for p in posts if p["points"] >= args.min_points]
+        print(
+            f"  After min-points={args.min_points} filter: "
+            f"{len(posts)} / {before} posts.",
+            file=sys.stderr,
+        )
 
     # Sort by points descending
     posts.sort(key=lambda x: x["points"], reverse=True)
