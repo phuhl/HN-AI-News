@@ -148,10 +148,16 @@ def validate(path):
         errors.append("'sections' is not a list")
         return errors, warnings
 
+    # Empty sections is valid (zero AI-relevant posts day) but ai_posts should be 0
     if len(categories) == 0:
-        errors.append("No sections found")
+        if isinstance(data.get("ai_posts"), int) and data["ai_posts"] != 0:
+            errors.append(
+                f"No sections but ai_posts={data['ai_posts']} (expected 0)"
+            )
+        return errors, warnings
 
     total_posts = 0
+    seen_links = {}  # link -> (category, index) for duplicate detection
     for ci, cat in enumerate(categories):
         if not isinstance(cat, dict):
             errors.append(f"Category {ci} is not a mapping")
@@ -172,6 +178,19 @@ def validate(path):
             post_errs, post_warns = validate_post(post, cat.get("name", "?"), pi)
             errors.extend(post_errs)
             warnings.extend(post_warns)
+
+            # Detect duplicate source URLs across the digest
+            link = post.get("link", "")
+            if isinstance(link, str) and link:
+                if link in seen_links:
+                    prev_cat, prev_idx = seen_links[link]
+                    warnings.append(
+                        f"[{cat.get('name', '?')}] post {pi}: duplicate link "
+                        f"also appears in [{prev_cat}] post {prev_idx}: "
+                        f"{link[:80]}"
+                    )
+                else:
+                    seen_links[link] = (cat.get("name", "?"), pi)
 
     # Cross-check ai_posts count
     if isinstance(data.get("ai_posts"), int) and total_posts != data["ai_posts"]:
@@ -223,6 +242,22 @@ def validate_post(post, category_name, index):
     if isinstance(hn_url, str) and hn_url:
         if "news.ycombinator.com/item?id=" not in hn_url:
             errors.append(f"{label}: 'hn_url' doesn't look like an HN URL")
+
+    # Domain vs link consistency
+    domain = post.get("domain", "")
+    if isinstance(link, str) and isinstance(domain, str) and link and domain:
+        # Extract domain from the link URL
+        m = re.match(r"https?://(?:www\.)?([^/]+)", link)
+        if m:
+            link_domain = m.group(1).lower().rstrip(".")
+            stated_domain = domain.lower().rstrip(".")
+            # Allow subdomain stripping (e.g., "blog.example.com" stated as
+            # "example.com") but flag completely different domains
+            if link_domain != stated_domain and not link_domain.endswith("." + stated_domain):
+                warnings.append(
+                    f"{label}: domain '{domain}' does not match link URL "
+                    f"(expected '{link_domain}')"
+                )
 
     # Bullet counts
     content_bullets = post.get("content_bullets", [])

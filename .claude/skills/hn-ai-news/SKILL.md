@@ -1,7 +1,7 @@
 ---
 name: hn-ai-news
 description: Compile an executive summary of AI-related Hacker News posts from the last 24 hours. Use this skill when the user asks for AI news, HN AI digest, tech news summary, what's happening in AI, AI headlines, or any request for a curated AI news briefing from Hacker News. Also trigger when the user asks about recent AI developments, AI news roundup, or wants to catch up on AI/ML/LLM news.
-allowed-tools: Bash, Read, WebFetch, Write
+allowed-tools: Agent, Bash, Read, WebFetch, Write
 argument-hint: [YYYY-MM-DD or "today"]
 ---
 
@@ -14,7 +14,7 @@ The output is a Jekyll post file (markdown with YAML frontmatter) containing str
 ## Step 1: Check Python dependencies
 
 ```bash
-python3 -c "import requests, bs4" 2>/dev/null || pip3 install --break-system-packages requests beautifulsoup4
+python3 -c "import requests, bs4, yaml" 2>/dev/null || pip3 install --break-system-packages requests beautifulsoup4 pyyaml
 ```
 
 ## Step 2: Fetch posts
@@ -47,22 +47,61 @@ Read `/tmp/hn_posts.json` and filter for AI-relevant posts. A post is AI-relevan
 
 Be inclusive rather than exclusive. When in doubt, include the post.
 
+### Deduplication
+
+HN often has multiple posts about the same topic (e.g., two submissions of the same article, or a blog post and its HN Show post). Before proceeding, group posts that cover the same underlying story. Keep the post with the most points as the primary entry — its `item_id`, `source_url`, `title`, `points`, and `hn_url` will be used in the final output. But note all duplicate item IDs so that Step 4 fetches discussions for all of them — the comments from smaller threads often contain unique insights that the main thread missed.
+
+### Zero AI-relevant posts
+
+If no posts pass the AI-relevance filter, still produce a digest. Use a single theme like "A quiet day for AI on Hacker News — no posts met the relevance threshold" and write an empty `sections: []`. The validator and Jekyll layout both handle this gracefully.
+
 ## Step 4: Fetch discussion details for AI-relevant posts
 
-For each AI-relevant post, fetch the HN discussion page to get comment content:
+For each AI-relevant post (including duplicate item IDs from Step 3), fetch the HN discussion via the Algolia API:
 
 ```bash
-echo '<JSON array of HN URLs or item IDs>' > /tmp/ai_post_ids.json
+echo '<JSON array of objects with item_id fields — include duplicates>' > /tmp/ai_post_ids.json
 python3 {{SKILL_DIR}}/scripts/fetch_hn_discussion.py --ids-file /tmp/ai_post_ids.json --max-items 40 > /tmp/hn_discussions.json 2>/tmp/hn_disc.log
 ```
 
-The script uses the HN Algolia API to fetch the full comment tree for each discussion. It returns the top comments (in HN's ranked order) paired with each comment's best reply for threaded context. It uses adaptive rate limiting with exponential backoff on 429s.
+The script returns the top comments (in HN's ranked order) paired with each comment's best reply for threaded context. It uses adaptive rate limiting with exponential backoff on 429s.
 
 If there are many AI-relevant posts (>20), prioritize by points. For posts with very few comments (<3), skip fetching and note "Limited discussion."
 
-## Step 5: Categorize and assign posts
+## Step 5: Merge data, categorize, and save
 
-Assign each AI-relevant post to exactly one category. Drop empty categories from output:
+### 5a: Save AI-relevant post IDs with duplicate groups
+
+From the filtering and deduplication in Step 3, save a JSON file listing the AI-relevant posts and their duplicate groups:
+
+```bash
+# Write to /tmp/ai_post_ids.json — example format:
+# [
+#   {"item_id": "12345", "duplicates": ["12399"]},
+#   {"item_id": "12346"},
+#   ...
+# ]
+```
+
+Each entry has an `item_id` (the primary post) and an optional `duplicates` array listing item IDs that cover the same story. Posts without duplicates can omit the field.
+
+### 5b: Run the merge script
+
+The merge script deterministically joins post metadata with discussion data, resolves URLs (preferring the Algolia canonical URL over hckrnews), and merges discussion threads from duplicate posts:
+
+```bash
+python3 {{SKILL_DIR}}/scripts/merge_posts.py \
+    --posts /tmp/hn_posts.json \
+    --discussions /tmp/hn_discussions.json \
+    --ai-ids /tmp/ai_post_ids.json \
+    > /tmp/hn_ai_merged.json 2>/tmp/hn_merge.log
+```
+
+The output contains one entry per deduplicated post with resolved `source_url`, `domain`, `time`, and merged `threads`. All metadata fields are finalized at this point — later steps should not modify them.
+
+### 5c: Categorize
+
+Read `/tmp/hn_ai_merged.json` and assign each post to exactly one category. Drop empty categories from output:
 
 | Category | What goes here |
 |----------|---------------|
@@ -83,7 +122,7 @@ Assign each AI-relevant post to exactly one category. Drop empty categories from
 
 Company-specific categories take priority when applicable.
 
-After categorizing, save the full list of posts with their metadata, category assignments, and discussion data to `/tmp/hn_ai_categorized.json`. This file will be the input for the summarization step.
+Save the categorized result to `/tmp/hn_ai_categorized.json` — add a `category` field to each entry from the merged data. This file is the single source of truth for Steps 6 and 7.
 
 ## Step 6: Summarize articles via subagents
 
@@ -91,13 +130,9 @@ This is the most important step for content quality. Each post needs two things:
 - **content_bullets**: a synthesis of the *actual article* (not HN comments)
 - **discussion_bullets**: a synthesis of the *HN thread*
 
-To produce good content_bullets, the article itself must be read. To keep the main context window lean, spawn subagents using the **Agent tool** to do the heavy lifting. Split the posts into batches of ~5 and spawn one subagent per batch, running them in parallel.
+To produce good content_bullets, the article itself must be read. To keep the main context window lean, spawn subagents using the **Agent tool** to do the heavy lifting.
 
-Each subagent prompt should include:
-1. The batch of posts (metadata + discussion threads from `/tmp/hn_ai_categorized.json`)
-2. Instructions to **WebFetch each article's source URL** and read the content
-3. Instructions to produce the structured YAML output per post (see format below)
-4. Instructions to save output to `/tmp/hn_summaries_batch_<N>.json`
+Read `/tmp/hn_ai_categorized.json`, split the posts into batches of ~5, and spawn one subagent per batch in parallel. Embed each batch's JSON directly in the subagent prompt — the subagent has no access to the parent's files otherwise.
 
 Here is a template for the subagent prompt — adapt as needed:
 
@@ -105,7 +140,12 @@ Here is a template for the subagent prompt — adapt as needed:
 You are summarizing articles for an AI news digest. For each post below,
 do the following:
 
-1. WebFetch the article URL to read the actual article content
+1. Fetch the article content using this fallback chain (stop at the first
+   one that returns usable article text):
+   a. WebFetch the original source URL
+   b. WebFetch the Google cache: https://webcache.googleusercontent.com/search?q=cache:<source_url>
+   c. WebFetch the Wayback Machine latest snapshot: https://web.archive.org/web/2/<source_url>
+   If all three fail, work from the title + HN discussion context.
 2. Write 3 content_bullets that summarize THE ARTICLE (not the HN comments):
    - Bullet 1: What it is or what happened — the core news
    - Bullet 2: A key technical detail, finding, or specification
@@ -114,30 +154,42 @@ do the following:
    (the interesting insights, counterarguments, or caveats from commenters)
 4. Write a summary field: a concise editorial headline for the post
 
-If WebFetch fails (paywall, 404, timeout), write content_bullets based on
-the article title and any clues from the HN discussion, and note that the
-article was not directly accessible.
+Your output is ONLY the three fields above (summary, content_bullets,
+discussion_bullets) plus the item_id to match back. All other metadata
+(source_url, title, points, hn_url, etc.) is already finalized upstream —
+do not return or modify those fields. This matters because the source_url
+was resolved from the HN submission; URLs found inside articles or comments
+are often related but different resources (e.g., a HuggingFace model repo
+vs. the blog post announcing it).
 
-If discussion is thin (<3 comments), use: "Limited discussion."
+If WebFetch fails (paywall, 404, JS-only page, timeout), write content_bullets
+based on the article title and whatever you can infer from the HN discussion.
+The reader should never see technical notes about fetch failures — just write
+the best summary you can from available context.
 
-Do NOT copy-paste HN comments verbatim into content_bullets. Those must be
-YOUR synthesis of the article. discussion_bullets should synthesize comment
-themes, not quote individual users.
+If discussion is thin (<3 comments), use a single discussion_bullet:
+"Limited discussion."
+
+content_bullets should be your synthesis of the article, not rephrased HN
+comments. discussion_bullets should synthesize comment themes, not quote
+individual users verbatim.
 
 Posts to process:
-<paste the batch JSON here>
+<embed the batch JSON here>
 
 Save the results as a JSON array to: /tmp/hn_summaries_batch_<N>.json
-Each entry should have: item_id, summary, content_bullets, discussion_bullets
+Each entry: { item_id, summary, content_bullets, discussion_bullets }
 ```
 
-After all subagents complete, read and merge the batch result files.
+After all subagents complete, read and merge the batch files. Match each result back to the corresponding entry in `/tmp/hn_ai_categorized.json` by `item_id`, combining the subagent's summary fields with the upstream metadata.
 
 ## Step 7: Assemble the Jekyll post
 
 Write a single file: `<workspace>/_posts/<YYYY-MM-DD>-hn-ai-news.md`
 
 This is a markdown file with YAML frontmatter containing ALL the structured digest data. The Jekyll layout template handles rendering — you only produce the data file.
+
+All metadata fields (`link`, `domain`, `title`, `points`, `hn_url`, `comments`, `time`) come directly from `/tmp/hn_ai_categorized.json` — they were resolved in Step 5 and should be copied as-is. The only fields that come from the Step 6 subagents are `summary`, `content_bullets`, and `discussion_bullets`.
 
 **Important date rule**: The `date`, `readable_date`, and the date in `title` must ALL use the digest date (the `--day` value / filename date), NOT the data-fetch day. If the digest is for 2026-04-21, everything says April 21 — even though the HN posts are from April 20.
 
@@ -158,9 +210,9 @@ themes:
 sections:
   - name: "<Category Name>"
     posts:
-      - title: "<exact original HN title, unchanged>"
-        link: "<source URL>"
-        domain: "<domain.com>"
+      - title: "<exact original HN title>"
+        link: "<source_url from Step 5 data>"
+        domain: "<domain extracted from link>"
         summary: "<your concise summary headline — informative rewrite of what this is about>"
         points: <number>
         hn_url: "https://news.ycombinator.com/item?id=<id>"
@@ -219,4 +271,4 @@ Push only if the user explicitly asks.
 - For busy days (>30 AI posts), focus on posts with 20+ points.
 - If scripts fail completely, fall back to WebFetch on `https://hckrnews.com/` and individual discussion pages.
 - The Jekyll site structure (layouts, config, styles) is already in the repo — do not modify those files.
-- If a subagent's WebFetch fails for an article, it should still produce content_bullets from the title and HN discussion context — just note the limitation.
+- If a subagent's WebFetch fails for an article, it should still produce content_bullets from the title and HN discussion context. Never surface technical failures in the reader-facing output.
