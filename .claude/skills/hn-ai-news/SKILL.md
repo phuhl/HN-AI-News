@@ -133,17 +133,17 @@ The template produces a page that looks like the Hacker News frontpage: orange t
   <details>
     <summary>key points &amp; discussion</summary>
     <ul class="content-bullets">
-      <li>Bullet point 1</li>
-      <li>Bullet point 2</li>
-      <li>Bullet point 3</li>
+      <li>What it is / what happened — the core news in one line</li>
+      <li>Key detail or technical finding worth knowing</li>
+      <li>Why it matters or what's notable about this</li>
     </ul>
     <div class="disc-header">
       Discussion: <a href="https://news.ycombinator.com/item?id=...">HN thread</a>
     </div>
     <ul class="discussion-bullets">
-      <li>Discussion point 1</li>
-      <li>Discussion point 2</li>
-      <li>Discussion point 3</li>
+      <li>Key insight or counterargument from the discussion</li>
+      <li>Notable technical point or experience shared</li>
+      <li>Important caveat or broader implication raised</li>
     </ul>
   </details>
 </div>
@@ -183,8 +183,8 @@ Push only if the user explicitly asks.
 - **Summary headline**: Concise, informative rewrite. If the original is clear, keep it similar.
 - **Original title**: Exact HN title, unchanged.
 - **Date, time**: `Apr 15, 14:30 UTC` from the `created_at` field.
-- **Bullets**: Short, scannable, one line each. Facts not opinions.
-- **Discussion bullets**: Most interesting/insightful top-comment points. Don't just copy top comments, but conceptually summarize most importent points. If discussion is thin, write "Limited discussion."
+- **Content bullets** (3 per post): These summarize the *article/announcement itself*, not HN comments. Write your own synthesis — don't copy-paste from comments. Structure: (1) what it is or what happened, (2) a key detail or technical finding, (3) why it matters or what's notable. Short, scannable, one line each. Facts not opinions.
+- **Discussion bullets** (2–3 per post): These summarize the *most interesting points from the HN comment thread* — not the article. Distill the key insights, counterarguments, technical experiences, or caveats that commenters raised. Don't just paste top comments verbatim; synthesize the important ideas. If discussion is thin (<3 comments), write "Limited discussion."
 
 ## Notes
 
