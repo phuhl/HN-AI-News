@@ -178,13 +178,13 @@ git commit -m "Add AI news digest for <YYYY-MM-DD>"
 
 Push only if the user explicitly asks.
 
-## Formatting rules
+## Formatting/Content rules
 
 - **Summary headline**: Concise, informative rewrite. If the original is clear, keep it similar.
 - **Original title**: Exact HN title, unchanged.
 - **Date, time**: `Apr 15, 14:30 UTC` from the `created_at` field.
 - **Bullets**: Short, scannable, one line each. Facts not opinions.
-- **Discussion bullets**: Most interesting/insightful top-comment points. If discussion is thin, write "Limited discussion."
+- **Discussion bullets**: Most interesting/insightful top-comment points. Don't just copy top comments, but conceptually summarize most importent points. If discussion is thin, write "Limited discussion."
 
 ## Notes
 
