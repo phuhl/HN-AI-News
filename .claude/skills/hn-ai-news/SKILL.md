@@ -130,58 +130,47 @@ This is the most important step for content quality. Each post needs two things:
 - **content_bullets**: a synthesis of the *actual article* (not HN comments)
 - **discussion_bullets**: a synthesis of the *HN thread*
 
-To produce good content_bullets, the article itself must be read. To keep the main context window lean, spawn subagents using the **Agent tool** to do the heavy lifting.
+To produce good content_bullets, the article itself must be read. To keep the main context window lean, spawn **one subagent per post** using the Agent tool. Each agent handles exactly one article — this prevents cross-contamination between posts with similar topics.
 
-Read `/tmp/hn_ai_categorized.json`, split the posts into batches of ~5, and spawn one subagent per batch in parallel. Embed each batch's JSON directly in the subagent prompt — the subagent has no access to the parent's files otherwise.
+Read `/tmp/hn_ai_categorized.json` and spawn all agents in parallel (use `run_in_background: true`). Embed the single post's JSON directly in the prompt — the subagent has no access to the parent's files. Each agent saves its result to `/tmp/hn_summary_<item_id>.json`.
 
-Here is a template for the subagent prompt — adapt as needed:
+If there are more than 15 posts, spawn them in two waves to avoid throughput issues — launch the first wave, wait for completion, then launch the second.
+
+Here is the subagent prompt template:
 
 ```
-You are summarizing articles for an AI news digest. For each post below,
-do the following:
+You are summarizing a single article for an AI news digest.
 
-1. Fetch the article content using this fallback chain (stop at the first
-   one that returns usable article text):
-   a. WebFetch the original source URL
-   b. WebFetch the Google cache: https://webcache.googleusercontent.com/search?q=cache:<source_url>
-   c. WebFetch the Wayback Machine latest snapshot: https://web.archive.org/web/2/<source_url>
-   If all three fail, work from the title + HN discussion context.
-2. Write 3 content_bullets that summarize THE ARTICLE (not the HN comments):
-   - Bullet 1: What it is or what happened — the core news
-   - Bullet 2: A key technical detail, finding, or specification
-   - Bullet 3: Why it matters or what's notable
+Article to summarize:
+<embed the single post JSON here, including title, source_url, and threads>
+
+Steps:
+1. Fetch the article using this fallback chain (stop at the first success):
+   a. WebFetch the source_url
+   b. WebFetch https://webcache.googleusercontent.com/search?q=cache:<source_url>
+   c. WebFetch https://web.archive.org/web/2/<source_url>
+   If all three fail, work from the title and discussion threads.
+2. Write 3 content_bullets summarizing THE ARTICLE (not HN comments):
+   - What it is or what happened — the core news
+   - A key technical detail, finding, or specification
+   - Why it matters or what's notable
 3. Write 2-3 discussion_bullets synthesizing the HN thread highlights
-   (the interesting insights, counterarguments, or caveats from commenters)
-4. Write a summary field: a concise editorial headline for the post
+   (interesting insights, counterarguments, or caveats from commenters).
+   If discussion is thin (<3 comments): single bullet "Limited discussion."
+4. Write a summary: a concise editorial headline for the post.
 
-Your output is ONLY the three fields above (summary, content_bullets,
-discussion_bullets) plus the item_id to match back. All other metadata
-(source_url, title, points, hn_url, etc.) is already finalized upstream —
-do not return or modify those fields. This matters because the source_url
-was resolved from the HN submission; URLs found inside articles or comments
-are often related but different resources (e.g., a HuggingFace model repo
-vs. the blog post announcing it).
+content_bullets must be your synthesis of the article itself — not rephrased
+HN comments. discussion_bullets should synthesize comment themes, not quote
+verbatim.
 
-If WebFetch fails (paywall, 404, JS-only page, timeout), write content_bullets
-based on the article title and whatever you can infer from the HN discussion.
-The reader should never see technical notes about fetch failures — just write
-the best summary you can from available context.
+If WebFetch fails, write the best summary you can from the title and thread
+context. Never mention fetch failures in the output.
 
-If discussion is thin (<3 comments), use a single discussion_bullet:
-"Limited discussion."
-
-content_bullets should be your synthesis of the article, not rephrased HN
-comments. discussion_bullets should synthesize comment themes, not quote
-individual users verbatim.
-
-Posts to process:
-<embed the batch JSON here>
-
-Save the results as a JSON array to: /tmp/hn_summaries_batch_<N>.json
-Each entry: { item_id, summary, content_bullets, discussion_bullets }
+Save the result as JSON to: /tmp/hn_summary_<item_id>.json
+Format: { "item_id": "...", "summary": "...", "content_bullets": [...], "discussion_bullets": [...] }
 ```
 
-After all subagents complete, read and merge the batch files. Match each result back to the corresponding entry in `/tmp/hn_ai_categorized.json` by `item_id`, combining the subagent's summary fields with the upstream metadata.
+After all subagents complete, read the per-post files and match each back to `/tmp/hn_ai_categorized.json` by `item_id`.
 
 ## Step 7: Assemble the Jekyll post
 
