@@ -53,14 +53,14 @@ For each AI-relevant post, fetch the HN discussion page to get comment content:
 
 ```bash
 echo '<JSON array of HN URLs or item IDs>' > /tmp/ai_post_ids.json
-python3 {{SKILL_DIR}}/scripts/fetch_hn_discussion.py --ids-file /tmp/ai_post_ids.json --max-items 30 > /tmp/hn_discussions.json 2>/tmp/hn_disc.log
+python3 {{SKILL_DIR}}/scripts/fetch_hn_discussion.py --ids-file /tmp/ai_post_ids.json --max-items 40 > /tmp/hn_discussions.json 2>/tmp/hn_disc.log
 ```
 
-The script uses adaptive rate limiting — it starts with 3s between requests and increases the delay automatically if it hits 429s, then gradually recovers.
+The script uses the HN Algolia API to fetch the full comment tree for each discussion. It returns the top comments (in HN's ranked order) paired with each comment's best reply for threaded context. It uses adaptive rate limiting with exponential backoff on 429s.
 
 If there are many AI-relevant posts (>20), prioritize by points. For posts with very few comments (<3), skip fetching and note "Limited discussion."
 
-## Step 5: Categorize posts
+## Step 5: Categorize and assign posts
 
 Assign each AI-relevant post to exactly one category. Drop empty categories from output:
 
@@ -83,11 +83,63 @@ Assign each AI-relevant post to exactly one category. Drop empty categories from
 
 Company-specific categories take priority when applicable.
 
-## Step 6: Write the Jekyll post
+After categorizing, save the full list of posts with their metadata, category assignments, and discussion data to `/tmp/hn_ai_categorized.json`. This file will be the input for the summarization step.
+
+## Step 6: Summarize articles via subagents
+
+This is the most important step for content quality. Each post needs two things:
+- **content_bullets**: a synthesis of the *actual article* (not HN comments)
+- **discussion_bullets**: a synthesis of the *HN thread*
+
+To produce good content_bullets, the article itself must be read. To keep the main context window lean, spawn subagents using the **Agent tool** to do the heavy lifting. Split the posts into batches of ~5 and spawn one subagent per batch, running them in parallel.
+
+Each subagent prompt should include:
+1. The batch of posts (metadata + discussion threads from `/tmp/hn_ai_categorized.json`)
+2. Instructions to **WebFetch each article's source URL** and read the content
+3. Instructions to produce the structured YAML output per post (see format below)
+4. Instructions to save output to `/tmp/hn_summaries_batch_<N>.json`
+
+Here is a template for the subagent prompt — adapt as needed:
+
+```
+You are summarizing articles for an AI news digest. For each post below,
+do the following:
+
+1. WebFetch the article URL to read the actual article content
+2. Write 3 content_bullets that summarize THE ARTICLE (not the HN comments):
+   - Bullet 1: What it is or what happened — the core news
+   - Bullet 2: A key technical detail, finding, or specification
+   - Bullet 3: Why it matters or what's notable
+3. Write 2-3 discussion_bullets synthesizing the HN thread highlights
+   (the interesting insights, counterarguments, or caveats from commenters)
+4. Write a summary field: a concise editorial headline for the post
+
+If WebFetch fails (paywall, 404, timeout), write content_bullets based on
+the article title and any clues from the HN discussion, and note that the
+article was not directly accessible.
+
+If discussion is thin (<3 comments), use: "Limited discussion."
+
+Do NOT copy-paste HN comments verbatim into content_bullets. Those must be
+YOUR synthesis of the article. discussion_bullets should synthesize comment
+themes, not quote individual users.
+
+Posts to process:
+<paste the batch JSON here>
+
+Save the results as a JSON array to: /tmp/hn_summaries_batch_<N>.json
+Each entry should have: item_id, summary, content_bullets, discussion_bullets
+```
+
+After all subagents complete, read and merge the batch result files.
+
+## Step 7: Assemble the Jekyll post
 
 Write a single file: `<workspace>/_posts/<YYYY-MM-DD>-hn-ai-news.md`
 
-This file is a markdown file with YAML frontmatter containing ALL the structured digest data. The Jekyll layout template in the repo handles rendering — you only produce the data.
+This is a markdown file with YAML frontmatter containing ALL the structured digest data. The Jekyll layout template handles rendering — you only produce the data file.
+
+**Important date rule**: The `date`, `readable_date`, and the date in `title` must ALL use the digest date (the `--day` value / filename date), NOT the data-fetch day. If the digest is for 2026-04-21, everything says April 21 — even though the HN posts are from April 20.
 
 ### YAML frontmatter structure
 
@@ -125,7 +177,9 @@ sections:
 ---
 ```
 
-That's it — no markdown body content is needed. The layout handles everything.
+No markdown body content is needed. The layout handles everything.
+
+**Do NOT use `categories:` as the key** — it is a reserved Jekyll frontmatter field. Always use `sections:`.
 
 ### Content guidelines for the structured fields
 
@@ -133,12 +187,12 @@ That's it — no markdown body content is needed. The layout handles everything.
 
 **summary**: A concise, informative rewrite of what the post is about. Not the original title (that's in `title`), but your editorial summary that helps readers understand the story at a glance. If the original title is already clear, keep it similar.
 
-**content_bullets** (3 per post): These summarize the *article or announcement itself* — NOT the HN comments. Write your own synthesis based on what the article is about, what it does or claims, and why it's significant. Structure:
+**content_bullets** (3 per post): These summarize the *article or announcement itself* — NOT the HN comments. The subagents WebFetched each article to produce these. Structure:
   1. What it is or what happened — the core news in one line
   2. A key technical detail, finding, or specification worth knowing
   3. Why it matters, what's notable, or what the implications are
 
-**discussion_bullets** (2-3 per post): These summarize the *most interesting ideas from the HN comment thread* — NOT the article content. Distill the key insights, counterarguments, technical experiences, or caveats that commenters raised. The goal is to capture what the community thinks is important, surprising, or wrong about the post. Don't copy-paste individual comments verbatim — synthesize the important points. If discussion is thin (<3 comments), use a single bullet: "Limited discussion."
+**discussion_bullets** (2-3 per post): These summarize the *most interesting ideas from the HN comment thread* — NOT the article content. Distill the key insights, counterarguments, technical experiences, or caveats that commenters raised. Don't copy-paste individual comments verbatim — synthesize the important points. If discussion is thin (<3 comments), use a single bullet: "Limited discussion."
 
 ### After writing the post
 
@@ -148,7 +202,7 @@ Run the validation script to verify the output is well-formed:
 python3 {{SKILL_DIR}}/scripts/validate_post.py <workspace>/_posts/<YYYY-MM-DD>-hn-ai-news.md
 ```
 
-The validator checks YAML structure, required fields, bullet counts, and detects common mistakes like copy-pasting HN comments into content_bullets (which should be your own synthesis of the article, not quotes from the thread). Fix any errors before committing. Warnings about pasted quotes or one-word bullets indicate the content_bullets need rewriting — they should describe the article, not echo comments.
+The validator checks YAML structure, required fields, bullet counts, date consistency (filename vs frontmatter vs title), and detects common mistakes like copy-pasting HN comments into content_bullets. Fix any errors before committing.
 
 Once validation passes cleanly, commit:
 
@@ -165,3 +219,4 @@ Push only if the user explicitly asks.
 - For busy days (>30 AI posts), focus on posts with 20+ points.
 - If scripts fail completely, fall back to WebFetch on `https://hckrnews.com/` and individual discussion pages.
 - The Jekyll site structure (layouts, config, styles) is already in the repo — do not modify those files.
+- If a subagent's WebFetch fails for an article, it should still produce content_bullets from the title and HN discussion context — just note the limitation.

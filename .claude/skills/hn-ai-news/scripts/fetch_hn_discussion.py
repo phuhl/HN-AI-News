@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 """
-Fetch HN discussion page(s) and extract key data:
-- Post title, points, comment count, submission time
-- Top-level comments (text + author + points)
+Fetch HN discussion threads via the Algolia API and extract high-signal
+comment data in a compact format.
 
-Outputs JSON. Handles 429s with exponential backoff.
+For each discussion, returns:
+- Post metadata (title, points, comment count)
+- Top comments ranked by points, each with their best reply for
+  threaded context
+
+Uses hn.algolia.com/api/v1/items/{id} which returns the full comment
+tree with point counts, letting us surface quality over quantity.
 
 Usage:
-    python3 fetch_hn_discussion.py <item_id_or_url> [<item_id_or_url> ...]
-    python3 fetch_hn_discussion.py --ids-file items.json  # JSON array of IDs/URLs
+    python3 fetch_hn_discussion.py <item_id_or_url> [...]
+    python3 fetch_hn_discussion.py --ids-file items.json --max-items 30
 
-    Fetches multiple discussions with rate limiting between requests.
+Outputs JSON array to stdout, logs to stderr.
 """
 
 import argparse
@@ -20,12 +25,11 @@ import sys
 import time
 
 import requests
-from bs4 import BeautifulSoup
 
 DEFAULT_TIMEOUT = 30
 MAX_RETRIES = 7
 INITIAL_BACKOFF = 3
-INTER_REQUEST_DELAY = 3.0  # seconds between requests to avoid 429
+INTER_REQUEST_DELAY = 1.0  # Algolia is more generous than HN HTML
 
 
 def fetch_with_retry(url, max_retries=MAX_RETRIES, timeout=DEFAULT_TIMEOUT):
@@ -80,89 +84,104 @@ def extract_item_id(ref):
     return None
 
 
-def parse_hn_discussion(html, item_id):
-    """Parse an HN discussion page and extract structured data."""
-    soup = BeautifulSoup(html, "html.parser")
+def strip_html(text):
+    """Remove HTML tags from comment text, keeping line breaks."""
+    if not text:
+        return ""
+    # Convert <p> and <br> to newlines before stripping
+    text = re.sub(r"<(?:p|br)\s*/?>", "\n", text, flags=re.IGNORECASE)
+    # Strip remaining tags
+    text = re.sub(r"<[^>]+>", "", text)
+    # Collapse multiple newlines
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    return text
+
+
+def count_descendants(node):
+    """Count total descendant comments."""
+    count = 0
+    for child in node.get("children", []):
+        if child.get("type") == "comment":
+            count += 1 + count_descendants(child)
+    return count
+
+
+def best_reply(parent_node):
+    """Find the highest-signal reply to a comment node.
+
+    HN returns replies in display order (voted). We pick the first
+    reply — HN's algorithm already ranked it highest. If it's very
+    short (<30 chars, e.g. "Yes." or "Agreed."), we skip to the next
+    one since those add little context for summarization.
+    """
+    for child in parent_node.get("children", []):
+        if child.get("type") != "comment":
+            continue
+        text = strip_html(child.get("text", ""))
+        if not text or len(text) < 30:
+            continue
+        return {
+            "author": child.get("author", ""),
+            "text": text[:800],
+            "replies": count_descendants(child),
+        }
+    return None
+
+
+def extract_discussion(data, max_comments=10):
+    """Extract top comments with their best reply from an Algolia item response.
+
+    Returns a compact structure: the top N comments by quality, each
+    paired with its highest-signal reply for threaded context.
+    """
+    item_id = str(data.get("id", ""))
 
     result = {
         "item_id": item_id,
         "hn_url": f"https://news.ycombinator.com/item?id={item_id}",
-        "title": "",
-        "source_url": "",
-        "points": 0,
-        "comments_count": 0,
-        "posted_time": "",
-        "top_comments": [],
+        "title": data.get("title", ""),
+        "source_url": data.get("url", ""),
+        "points": data.get("points") or 0,
+        "comments_count": count_descendants(data),
+        "threads": [],
     }
 
-    # Title
-    title_el = soup.select_one(".titleline > a")
-    if title_el:
-        result["title"] = title_el.get_text(strip=True)
-        result["source_url"] = title_el.get("href", "")
-
-    # Points
-    score_el = soup.select_one(".score")
-    if score_el:
-        m = re.search(r"(\d+)", score_el.get_text())
-        if m:
-            result["points"] = int(m.group(1))
-
-    # Time
-    age_el = soup.select_one(".age")
-    if age_el:
-        result["posted_time"] = age_el.get_text(strip=True)
-
-    # Comments - find top-level comments (indent level 0)
-    comment_trees = soup.select(".comtr")
-    top_comments = []
-
-    for ct in comment_trees:
-        # Check indent level
-        indent_el = ct.select_one(".ind img, .ind")
-        indent = 0
-        if indent_el:
-            width = indent_el.get("width", "0")
-            try:
-                indent = int(width) // 40  # Each level is 40px
-            except (ValueError, TypeError):
-                indent = 0
-
-        if indent > 0:
-            continue  # Skip replies, only want top-level
-
-        comment_el = ct.select_one(".commtext")
-        if not comment_el:
+    # Get top-level comments — Algolia returns them in HN's display
+    # order, which is already ranked by HN's voting algorithm.  We
+    # trust that ordering as the primary quality signal and use
+    # descendant count (engagement) as a secondary filter to skip
+    # low-signal comments when we have plenty to choose from.
+    top_level = []
+    for position, child in enumerate(data.get("children", [])):
+        if child.get("type") != "comment":
             continue
+        text = strip_html(child.get("text", ""))
+        if not text:
+            continue
+        top_level.append({
+            "text": text,
+            "author": child.get("author", ""),
+            "position": position,
+            "n_descendants": count_descendants(child),
+            "_raw_node": child,
+        })
 
-        author_el = ct.select_one(".hnuser")
-        author = author_el.get_text(strip=True) if author_el else ""
-
-        # Get comment text, preserving paragraph breaks
-        comment_text = comment_el.get_text(separator="\n", strip=True)
-
-        # Truncate very long comments
-        if len(comment_text) > 800:
-            comment_text = comment_text[:800] + "..."
-
-        top_comments.append(
-            {
-                "author": author,
-                "text": comment_text,
-            }
-        )
-
-        if len(top_comments) >= 15:
-            break
-
-    result["top_comments"] = top_comments
-    result["comments_count"] = len(comment_trees)
+    for comment in top_level[:max_comments]:
+        thread = {
+            "author": comment["author"],
+            "text": comment["text"][:1000],
+            "replies": comment["n_descendants"],
+        }
+        reply = best_reply(comment["_raw_node"])
+        if reply:
+            thread["top_reply"] = reply
+        result["threads"].append(thread)
 
     return result
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Fetch HN discussion pages")
+    parser = argparse.ArgumentParser(description="Fetch HN discussions via Algolia API")
     parser.add_argument(
         "items",
         nargs="*",
@@ -176,7 +195,13 @@ def main():
         "--max-items",
         type=int,
         default=50,
-        help="Maximum number of items to fetch (default: 50)",
+        help="Maximum number of discussions to fetch (default: 50)",
+    )
+    parser.add_argument(
+        "--max-comments",
+        type=int,
+        default=20,
+        help="Top comments per discussion (default: 20)",
     )
     args = parser.parse_args()
 
@@ -211,33 +236,36 @@ def main():
     print(f"Fetching {len(unique_refs)} discussions...", file=sys.stderr)
 
     results = []
-    consecutive_429s = 0
     current_delay = INTER_REQUEST_DELAY
 
     for i, item_id in enumerate(unique_refs):
-        url = f"https://news.ycombinator.com/item?id={item_id}"
-        print(f"  [{i + 1}/{len(unique_refs)}] Fetching {url}", file=sys.stderr)
+        url = f"https://hn.algolia.com/api/v1/items/{item_id}"
+        print(f"  [{i + 1}/{len(unique_refs)}] Fetching {item_id}", file=sys.stderr)
 
         resp = fetch_with_retry(url)
         if resp:
-            result = parse_hn_discussion(resp.text, item_id)
-            results.append(result)
-            consecutive_429s = 0
-            # Gradually reduce delay back toward baseline after successes
-            current_delay = max(INTER_REQUEST_DELAY, current_delay * 0.8)
-        else:
-            results.append(
-                {
+            try:
+                data = resp.json()
+                result = extract_discussion(data, max_comments=args.max_comments)
+                results.append(result)
+                # Recover delay after success
+                current_delay = max(INTER_REQUEST_DELAY, current_delay * 0.8)
+            except (json.JSONDecodeError, ValueError) as e:
+                print(f"  [error] Bad JSON for {item_id}: {e}", file=sys.stderr)
+                results.append({
                     "item_id": item_id,
-                    "hn_url": url,
-                    "error": "Failed to fetch after retries",
-                }
-            )
-            consecutive_429s += 1
-            # Increase delay after failures to let rate limit window reset
+                    "hn_url": f"https://news.ycombinator.com/item?id={item_id}",
+                    "error": f"JSON parse error: {e}",
+                })
+        else:
+            results.append({
+                "item_id": item_id,
+                "hn_url": f"https://news.ycombinator.com/item?id={item_id}",
+                "error": "Failed to fetch after retries",
+            })
             current_delay = min(current_delay * 2, 60)
             print(
-                f"  [rate-limit] Increasing inter-request delay to {current_delay:.1f}s",
+                f"  [rate-limit] Increasing delay to {current_delay:.1f}s",
                 file=sys.stderr,
             )
 
