@@ -18,8 +18,10 @@ Usage:
     python3 validate_post.py <path-to-post.md>
 """
 
+import os
 import re
 import sys
+from datetime import datetime
 
 import yaml
 
@@ -57,6 +59,13 @@ def validate(path):
     if not isinstance(data, dict):
         return ["Frontmatter is not a YAML mapping"], []
 
+    # Reject Jekyll reserved keys used for structured data
+    if "categories" in data:
+        errors.append(
+            "'categories' is a reserved Jekyll key — use 'sections' instead. "
+            "Jekyll appends extra string entries, causing empty section headers."
+        )
+
     # Required top-level fields
     required_top = {
         "layout": str,
@@ -66,7 +75,7 @@ def validate(path):
         "total_posts": int,
         "ai_posts": int,
         "themes": list,
-        "categories": list,
+        "sections": list,
     }
 
     for field, expected_type in required_top.items():
@@ -83,6 +92,45 @@ def validate(path):
         if not re.match(r"^\d{4}-\d{2}-\d{2}$", data["date"]):
             errors.append(f"Date format should be YYYY-MM-DD, got: {data['date']}")
 
+    # Date consistency: filename, date field, readable_date, and title must agree
+    basename = os.path.basename(path)
+    fn_match = re.match(r"^(\d{4}-\d{2}-\d{2})-", basename)
+    fn_date = fn_match.group(1) if fn_match else None
+
+    fm_date = data.get("date", "")
+    if isinstance(fm_date, str) and fn_date:
+        if fm_date != fn_date:
+            errors.append(
+                f"Frontmatter date '{fm_date}' does not match filename date '{fn_date}'"
+            )
+
+    # Build the expected readable date from the digest date (filename or frontmatter)
+    digest_date_str = fn_date or fm_date
+    expected_readable = None
+    if isinstance(digest_date_str, str) and re.match(r"^\d{4}-\d{2}-\d{2}$", digest_date_str):
+        try:
+            dt = datetime.strptime(digest_date_str, "%Y-%m-%d")
+            expected_readable = dt.strftime("%B %-d, %Y")  # e.g. "April 21, 2026"
+        except ValueError:
+            pass
+
+    readable = data.get("readable_date", "")
+    if expected_readable and isinstance(readable, str):
+        if readable != expected_readable:
+            errors.append(
+                f"readable_date '{readable}' does not match digest date "
+                f"(expected '{expected_readable}')"
+            )
+
+    title = data.get("title", "")
+    if expected_readable and isinstance(title, str):
+        # The title should contain the readable date
+        if expected_readable not in title:
+            errors.append(
+                f"title does not contain the digest date — expected "
+                f"'{expected_readable}' somewhere in '{title}'"
+            )
+
     # Themes
     themes = data.get("themes", [])
     if isinstance(themes, list):
@@ -94,14 +142,14 @@ def validate(path):
             elif len(theme) < 20:
                 warnings.append(f"Theme {i} is very short ({len(theme)} chars)")
 
-    # Categories
-    categories = data.get("categories", [])
+    # Sections (categories of posts)
+    categories = data.get("sections", [])
     if not isinstance(categories, list):
-        errors.append("'categories' is not a list")
+        errors.append("'sections' is not a list")
         return errors, warnings
 
     if len(categories) == 0:
-        errors.append("No categories found")
+        errors.append("No sections found")
 
     total_posts = 0
     for ci, cat in enumerate(categories):

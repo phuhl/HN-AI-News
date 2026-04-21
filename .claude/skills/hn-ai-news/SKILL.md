@@ -103,7 +103,7 @@ themes:
   - "<theme sentence 1 — a key trend or pattern across multiple posts>"
   - "<theme sentence 2>"
   - "<theme sentence 3>"
-categories:
+sections:
   - name: "<Category Name>"
     posts:
       - title: "<exact original HN title, unchanged>"
