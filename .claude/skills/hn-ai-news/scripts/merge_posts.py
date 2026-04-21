@@ -50,6 +50,44 @@ def extract_domain(url):
         return ""
 
 
+def fix_mojibake(text):
+    """Repair common UTF-8 mojibake in HN titles.
+
+    hckrnews.com sometimes double-encodes UTF-8, producing sequences like
+    â€" (em dash), â€™ (right single quote), â€œ/â€ (smart quotes).
+    This happens when UTF-8 bytes are misinterpreted as Latin-1 then
+    re-encoded as UTF-8.  We reverse the process: encode as Latin-1
+    (recovering the original bytes) then decode as UTF-8.
+    """
+    if not text:
+        return text
+    # Only attempt repair if we see the telltale â character (0xC3 0xA2),
+    # which is the Latin-1 interpretation of the first byte of a 3-byte
+    # UTF-8 sequence starting with 0xE2.
+    if "\u00e2" not in text:
+        return text
+    try:
+        return text.encode("latin-1").decode("utf-8")
+    except (UnicodeDecodeError, UnicodeEncodeError):
+        return text
+
+
+def resolve_title(post_title, discussion_title):
+    """Pick the best title, preferring Algolia's (which has correct encoding).
+
+    hckrnews titles often contain mojibake (double-encoded UTF-8).
+    The Algolia API returns properly encoded titles, so prefer those
+    when available.  As a fallback, attempt mojibake repair on the
+    hckrnews title.
+    """
+    # Algolia title is authoritative when present
+    if discussion_title and "\u00e2" not in discussion_title:
+        return discussion_title
+    if post_title:
+        return fix_mojibake(post_title)
+    return discussion_title or ""
+
+
 def resolve_url(post_url, discussion_url):
     """Pick the best source URL.
 
@@ -165,7 +203,9 @@ def main():
 
         result = {
             "item_id": primary_id,
-            "title": post.get("title", discussion.get("title", "")),
+            "title": resolve_title(
+                post.get("title", ""), discussion.get("title", "")
+            ),
             "source_url": source_url,
             "domain": extract_domain(source_url),
             "hn_url": post.get(
