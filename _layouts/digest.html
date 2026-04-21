@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page.title }}</title>
+    <link rel="stylesheet" href="{{ '/style.css' | relative_url }}" />
+  </head>
+  <body>
+    <div id="hnbar">
+      <a class="logo" href="{{ '/' | relative_url }}">Y</a>
+      <a class="sitename" href="{{ '/' | relative_url }}">AI HN Digest</a>
+      <span class="sep">|</span>
+      <span class="pagetitle">{{ page.title }}</span>
+      <a class="today-link" id="today-link" href="#">today</a>
+    </div>
+    <script>
+      (function () {
+        var el = document.getElementById("today-link");
+        var currentPage = window.location.pathname.split("/").pop();
+
+        function check() {
+          var d = new Date();
+          var file =
+            "hn-ai-news-" +
+            d.getFullYear() +
+            "-" +
+            String(d.getMonth() + 1).padStart(2, "0") +
+            "-" +
+            String(d.getDate()).padStart(2, "0") +
+            ".html";
+          if (currentPage !== file) {
+            el.href = file;
+            el.style.display = "inline";
+          }
+        }
+
+        check();
+        setInterval(check, 60000);
+      })();
+    </script>
+
+    <div id="wrap">
+      <p style="font-size:8pt; color:#828282; margin-bottom:4px;">
+        {{ page.readable_date }} &mdash; {{ page.ai_posts }} AI-relevant posts from {{ page.total_posts }} total
+      </p>
+
+      <div class="themes">
+        <div class="themes-title">Key Themes</div>
+        <ul>
+          {% for theme in page.themes %}
+          <li>{{ theme | escape }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      {% for category in page.categories %}
+      <div class="category-header">{{ category.name | escape }}</div>
+
+      {% for post in category.posts %}
+      <div class="item">
+        <div class="item-title-row">
+          <a class="item-title" href="{{ post.link }}">{{ post.title | escape }}</a>
+          <span class="source-domain">({{ post.domain }})</span>
+        </div>
+        <div class="item-orig-title">{{ post.summary | escape }}</div>
+        <div class="item-meta">
+          <span class="pts">{{ post.points }} points</span>
+          &nbsp;|&nbsp; {{ post.time }}
+          &nbsp;|&nbsp; <a class="comments-link" href="{{ post.hn_url }}">{{ post.comments }} comments</a>
+        </div>
+        <details>
+          <summary>key points &amp; discussion</summary>
+          <ul class="content-bullets">
+            {% for bullet in post.content_bullets %}
+            <li>{{ bullet | escape }}</li>
+            {% endfor %}
+          </ul>
+          <div class="disc-header">
+            Discussion: <a href="{{ post.hn_url }}">HN thread</a>
+          </div>
+          <ul class="discussion-bullets">
+            {% for bullet in post.discussion_bullets %}
+            <li>{{ bullet | escape }}</li>
+            {% endfor %}
+          </ul>
+        </details>
+      </div>
+      {% endfor %}
+      {% endfor %}
+    </div>
+  </body>
+</html>

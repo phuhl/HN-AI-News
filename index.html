@@ -1,10 +1,13 @@
+---
+layout: null
+---
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI HN Digest — Archive</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="{{ '/style.css' | relative_url }}">
 </head>
 <body>
 
@@ -19,36 +22,14 @@
 
 <div class="section-header">Daily AI digests &mdash; latest first</div>
 
+{% assign sorted_posts = site.posts | sort: 'date' | reverse %}
+{% for post in sorted_posts %}
 <div class="entry">
-  <span class="entry-rank">1.</span>
-  <a class="entry-link" href="hn-ai-news-2026-04-21.html">AI News &mdash; April 21, 2026</a>
-  <span class="entry-meta">28 posts</span>
+  <span class="entry-rank">{{ forloop.index }}.</span>
+  <a class="entry-link" href="{{ post.url | relative_url }}">AI News &mdash; {{ post.readable_date }}</a>
+  <span class="entry-meta">{{ post.ai_posts }} posts</span>
 </div>
-<div class="entry">
-  <span class="entry-rank">2.</span>
-  <a class="entry-link" href="hn-ai-news-2026-04-20.html">AI News &mdash; April 20, 2026</a>
-  <span class="entry-meta">19 posts</span>
-</div>
-<div class="entry">
-  <span class="entry-rank">3.</span>
-  <a class="entry-link" href="hn-ai-news-2026-04-19.html">AI News &mdash; April 19, 2026</a>
-  <span class="entry-meta">17 posts</span>
-</div>
-<div class="entry">
-  <span class="entry-rank">4.</span>
-  <a class="entry-link" href="hn-ai-news-2026-04-18.html">AI News &mdash; April 18, 2026</a>
-  <span class="entry-meta">16 posts</span>
-</div>
-<div class="entry">
-  <span class="entry-rank">5.</span>
-  <a class="entry-link" href="hn-ai-news-2026-04-17.html">AI News &mdash; April 17, 2026</a>
-  <span class="entry-meta">29 posts</span>
-</div>
-<div class="entry">
-  <span class="entry-rank">6.</span>
-  <a class="entry-link" href="hn-ai-news-2026-04-16.html">AI News &mdash; April 16, 2026</a>
-  <span class="entry-meta"></span>
-</div>
+{% endfor %}
 
 </div>
 </body>

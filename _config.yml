@@ -1,0 +1,9 @@
+title: AI HN Digest
+description: Daily AI news digest from Hacker News
+permalink: /hn-ai-news-:year-:month-:day.html
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: digest
