@@ -245,15 +245,16 @@ python3 {{SKILL_DIR}}/scripts/validate_post.py <workspace>/_posts/<YYYY-MM-DD>-h
 
 The validator checks YAML structure, required fields, bullet counts, date consistency (filename vs frontmatter vs title), and detects common mistakes like copy-pasting HN comments into content_bullets. Fix any errors before committing.
 
-Once validation passes cleanly, commit:
+Once validation passes cleanly, commit and push to master:
 
 ```bash
 cd <workspace>
 git add _posts/<YYYY-MM-DD>-hn-ai-news.md
 git commit -m "Add AI news digest for <YYYY-MM-DD>"
+git push origin HEAD:master
 ```
 
-Push only if the user explicitly asks.
+Use `HEAD:master` rather than pushing the current branch — this ensures the post lands on master on the remote even if you are running on a worktree branch (e.g. `claude/festive-cerf-sHr3K`). Never push the worktree branch itself.
 
 ## Notes
 
