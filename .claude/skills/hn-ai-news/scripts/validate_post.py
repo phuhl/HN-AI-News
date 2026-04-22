@@ -262,9 +262,9 @@ def validate_post(post, category_name, index):
     # Bullet counts
     content_bullets = post.get("content_bullets", [])
     if isinstance(content_bullets, list):
-        if len(content_bullets) != 3:
+        if not (3 <= len(content_bullets) <= 5):
             warnings.append(
-                f"{label}: has {len(content_bullets)} content_bullets (expected 3)"
+                f"{label}: has {len(content_bullets)} content_bullets (expected 3-5)"
             )
         # Heuristic: detect copy-pasted comments
         for bi, bullet in enumerate(content_bullets):

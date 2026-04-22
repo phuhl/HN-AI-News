@@ -150,14 +150,17 @@ Steps:
    b. WebFetch https://webcache.googleusercontent.com/search?q=cache:<source_url>
    c. WebFetch https://web.archive.org/web/2/<source_url>
    If all three fail, work from the title and discussion threads.
-2. Write 3 content_bullets summarizing THE ARTICLE (not HN comments):
-   - What it is or what happened — the core news
-   - A key technical detail, finding, or specification
-   - Why it matters or what's notable
+2. Write 3–5 content_bullets summarizing THE ARTICLE (not HN comments).
+   Each bullet is a tight, standalone one-liner — aim for scan-ability over completeness.
+   Cover: what happened, any important specifics, why it matters. Don't pad to hit a count;
+   don't cram two ideas into one sentence. Plain English — spell out any acronyms or
+   jargon that a smart non-specialist wouldn't immediately recognize.
 3. Write 2-3 discussion_bullets synthesizing the HN thread highlights
    (interesting insights, counterarguments, or caveats from commenters).
    If discussion is thin (<3 comments): single bullet "Limited discussion."
-4. Write a summary: a concise editorial headline for the post.
+4. Write a summary: a plain-English editorial headline. Avoid insider abbreviations —
+   if you use an acronym, it should be one any tech-curious reader would know (AI, API are fine;
+   things like RLHF, MoE, KV-cache are not — spell them out or rephrase).
 
 content_bullets must be your synthesis of the article itself — not rephrased
 HN comments. discussion_bullets should synthesize comment themes, not quote
@@ -208,9 +211,9 @@ sections:
         comments: <number>
         time: "<Mon DD, HH:MM UTC>"
         content_bullets:
-          - "<what it is or what happened — the core news>"
-          - "<key technical detail or finding worth knowing>"
-          - "<why it matters or what's notable about this>"
+          - "<tight one-liner: what happened or what this is>"
+          - "<tight one-liner: a key detail or spec>"
+          - "<tight one-liner: why it matters — add more bullets if useful, up to 5>"
         discussion_bullets:
           - "<key insight or counterargument from the HN thread>"
           - "<notable technical experience or perspective shared>"
@@ -226,12 +229,9 @@ No markdown body content is needed. The layout handles everything.
 
 **themes** (3-5 sentences): High-level patterns you notice across the day's posts. Each theme should connect multiple posts or highlight a significant trend. These give the reader a quick "what happened today in AI" overview without reading individual posts.
 
-**summary**: A concise, informative rewrite of what the post is about. Not the original title (that's in `title`), but your editorial summary that helps readers understand the story at a glance. If the original title is already clear, keep it similar.
+**summary**: A plain-English editorial headline — not a restatement of the HN title, but a rewrite that makes the story immediately clear to any tech-curious reader. Avoid insider abbreviations and acronyms unless they're universally known (AI, API: fine; RLHF, MoE, KV-cache: spell out or rephrase). Aim for the kind of headline you'd see in a well-written newsletter.
 
-**content_bullets** (3 per post): These summarize the *article or announcement itself* — NOT the HN comments. The subagents WebFetched each article to produce these. Structure:
-  1. What it is or what happened — the core news in one line
-  2. A key technical detail, finding, or specification worth knowing
-  3. Why it matters, what's notable, or what the implications are
+**content_bullets** (3–5 per post): These summarize the *article or announcement itself* — NOT the HN comments. Think scannable one-liners: each bullet should stand alone and deliver one crisp fact or takeaway. Don't cap at 3 if there's more worth knowing; don't pad to 5 if 3 covers it. Prefer shorter sentences over structured sub-bullets. Plain English throughout — define any jargon a non-specialist might not know.
 
 **discussion_bullets** (2-3 per post): These summarize the *most interesting ideas from the HN comment thread* — NOT the article content. Distill the key insights, counterarguments, technical experiences, or caveats that commenters raised. Don't copy-paste individual comments verbatim — synthesize the important points. If discussion is thin (<3 comments), use a single bullet: "Limited discussion."
 
