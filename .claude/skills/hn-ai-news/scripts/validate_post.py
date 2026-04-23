@@ -259,7 +259,10 @@ def validate_post(post, category_name, index):
                     f"(expected '{link_domain}')"
                 )
 
-    # Bullet counts
+    # Bullet counts and length
+    BULLET_WARN_CHARS = 200
+    BULLET_ERROR_CHARS = 300
+
     content_bullets = post.get("content_bullets", [])
     if isinstance(content_bullets, list):
         if not (3 <= len(content_bullets) <= 5):
@@ -269,6 +272,17 @@ def validate_post(post, category_name, index):
         # Heuristic: detect copy-pasted comments
         for bi, bullet in enumerate(content_bullets):
             if isinstance(bullet, str):
+                blen = len(bullet)
+                if blen > BULLET_ERROR_CHARS:
+                    errors.append(
+                        f"{label}: content_bullet {bi} is {blen} chars "
+                        f"(max {BULLET_ERROR_CHARS}) — split or shorten it"
+                    )
+                elif blen > BULLET_WARN_CHARS:
+                    warnings.append(
+                        f"{label}: content_bullet {bi} is {blen} chars "
+                        f"(aim for under {BULLET_WARN_CHARS})"
+                    )
                 if bullet.startswith(">") or bullet.startswith("&gt;"):
                     warnings.append(
                         f"{label}: content_bullet {bi} starts with '>' "
@@ -288,6 +302,19 @@ def validate_post(post, category_name, index):
             warnings.append(
                 f"{label}: has {len(disc_bullets)} discussion_bullets (expected 2-3)"
             )
+        for bi, bullet in enumerate(disc_bullets):
+            if isinstance(bullet, str):
+                blen = len(bullet)
+                if blen > BULLET_ERROR_CHARS:
+                    errors.append(
+                        f"{label}: discussion_bullet {bi} is {blen} chars "
+                        f"(max {BULLET_ERROR_CHARS}) — split or shorten it"
+                    )
+                elif blen > BULLET_WARN_CHARS:
+                    warnings.append(
+                        f"{label}: discussion_bullet {bi} is {blen} chars "
+                        f"(aim for under {BULLET_WARN_CHARS})"
+                    )
 
     # Summary should differ from title
     title = post.get("title", "")

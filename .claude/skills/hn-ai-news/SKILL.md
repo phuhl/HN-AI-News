@@ -152,7 +152,20 @@ Steps:
    If all three fail, work from the title and discussion threads.
 2. Write 3–5 content_bullets summarizing THE ARTICLE (not HN comments).
    Each bullet is a tight, standalone one-liner — aim for scan-ability over completeness.
-   Cover: what happened, any important specifics, why it matters. Don't pad to hit a count;
+   IMPORTANT — no rehashing: The reader has already seen the title and your summary
+   headline. Your first bullet must NOT restate what they say. Jump straight to the
+   details, specifics, or context that the headlines couldn't convey. Every bullet
+   should teach the reader something new.
+   ONE EXCEPTION — context for obscure terms: If the title or summary mentions a
+   lesser-known technology, language, company, or concept (e.g. "Zig", "Mojo",
+   "Anduril"), weave a brief parenthetical explanation into whichever bullet first
+   uses it — e.g. "a single Zig (low-level programming language) binary" or
+   "Anduril (defense-tech startup)". You don't need this for household names like
+   Python, TypeScript, AWS, OpenAI, Google, etc. — only for things a tech-curious
+   reader might not immediately recognize.
+   Keep bullets SHORT — under 200 characters each (hard cap: 300). If a bullet needs
+   more than one sentence, split it into two bullets or cut the less important half.
+   Cover: key specifics, notable numbers, why it matters. Don't pad to hit a count;
    don't cram two ideas into one sentence. Plain English — spell out any acronyms or
    jargon that a smart non-specialist wouldn't immediately recognize.
 3. Write 2-3 discussion_bullets synthesizing the HN thread highlights
@@ -232,6 +245,8 @@ No markdown body content is needed. The layout handles everything.
 **summary**: A plain-English editorial headline — not a restatement of the HN title, but a rewrite that makes the story immediately clear to any tech-curious reader. Avoid insider abbreviations and acronyms unless they're universally known (AI, API: fine; RLHF, MoE, KV-cache: spell out or rephrase). Aim for the kind of headline you'd see in a well-written newsletter.
 
 **content_bullets** (3–5 per post): These summarize the *article or announcement itself* — NOT the HN comments. Think scannable one-liners: each bullet should stand alone and deliver one crisp fact or takeaway. Don't cap at 3 if there's more worth knowing; don't pad to 5 if 3 covers it. Prefer shorter sentences over structured sub-bullets. Plain English throughout — define any jargon a non-specialist might not know.
+
+**Bullet brevity and non-redundancy**: The reader sees title → summary → bullets in that order. By the time they hit the bullets, they already know *what* the thing is and roughly *why it matters* — the title and summary covered that. So bullets should skip the setup and go straight to the interesting specifics, numbers, caveats, or context. Each bullet should be under 200 characters (the validator warns above 200 and errors above 300). If you can't fit a point in 200 chars, either split it or cut the weaker half.
 
 **discussion_bullets** (2-3 per post): These summarize the *most interesting ideas from the HN comment thread* — NOT the article content. Distill the key insights, counterarguments, technical experiences, or caveats that commenters raised. Don't copy-paste individual comments verbatim — synthesize the important points. If discussion is thin (<3 comments), use a single bullet: "Limited discussion."
 
