@@ -76,6 +76,17 @@ def main():
     if fm_date and date_val != fm_date:
         errors.append(f"frontmatter date '{date_val}' != filename date '{fm_date}'")
 
+    # The site derives URLs from the date alone, so without a distinct permalink
+    # the weekly post collides with that day's daily digest. This silently drops
+    # one page on the live site, so treat a missing/colliding permalink as fatal.
+    permalink = fm.get("permalink")
+    if not permalink:
+        errors.append("missing 'permalink' — the site builds URLs from the date "
+                      "only, so without one this collides with the daily digest")
+    elif "weekly" not in str(permalink):
+        errors.append(f"permalink '{permalink}' must contain 'weekly' to stay "
+                      f"distinct from the daily digest's date-based URL")
+
     # Title should reference the end-date's year/month so it reads as that week.
     if fm_date:
         try:

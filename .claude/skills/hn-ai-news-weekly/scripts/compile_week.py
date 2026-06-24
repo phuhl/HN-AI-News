@@ -306,6 +306,12 @@ def cmd_assemble(args):
         "layout": "digest",
         "digest_type": "weekly",
         "date": end.isoformat(),
+        # _config.yml derives every post's URL from its DATE alone
+        # (permalink: /hn-ai-news-:year-:month-:day.html), so the weekly and
+        # the daily that share an end date would otherwise collide on the same
+        # URL and silently clobber each other. An explicit permalink with a
+        # 'weekly' segment keeps them distinct.
+        "permalink": f"/hn-ai-news-weekly-{end.isoformat()}.html",
         "title": f"Weekly AI Digest — {readable}",
         "readable_date": readable,
         # For the weekly view we repurpose the daily layout's stat line:

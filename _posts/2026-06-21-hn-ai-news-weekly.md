@@ -2,6 +2,7 @@
 layout: digest
 digest_type: weekly
 date: '2026-06-21'
+permalink: /hn-ai-news-weekly-2026-06-21.html
 title: Weekly AI Digest — Week of Jun 15–21, 2026
 readable_date: Week of Jun 15–21, 2026
 total_posts: 146

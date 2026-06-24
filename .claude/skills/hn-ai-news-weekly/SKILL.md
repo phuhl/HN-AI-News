@@ -106,11 +106,17 @@ python3 {{SKILL_DIR}}/scripts/compile_week.py assemble \
     --posts-dir _posts
 ```
 
-This writes `_posts/<end-date>-hn-ai-news-weekly.md`. The `-weekly` suffix keeps
-it from colliding with that day's daily digest and marks it for the index. The
-frontmatter uses `layout: digest` (the existing template) plus
-`digest_type: weekly`, a "Weekly AI Digest — Week of …" title, and a
-"Week of …" `readable_date` so it reads as a week everywhere it appears.
+This writes `_posts/<end-date>-hn-ai-news-weekly.md`. The frontmatter uses
+`layout: digest` (the existing template) plus `digest_type: weekly`, a
+"Weekly AI Digest — Week of …" title, and a "Week of …" `readable_date` so it
+reads as a week everywhere it appears.
+
+It also sets an explicit `permalink: /hn-ai-news-weekly-<end-date>.html`. This
+matters: `_config.yml` derives every post's URL from its **date alone**
+(`/hn-ai-news-:year-:month-:day.html`), ignoring the filename, so the weekly and
+the daily for the same end date would otherwise resolve to the *same* URL and
+silently clobber each other on the live site. The `weekly` segment keeps them
+apart — the validator fails if it's missing.
 
 ## Step 5: Validate
 
