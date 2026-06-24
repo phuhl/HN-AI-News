@@ -257,3 +257,23 @@ summary:hover {
   margin-left: 4px;
 }
 
+/* Weekly digests sit inline with the dailies but get a badge + tinted row so
+   they stand out without needing a separate, scroll-eating section. */
+.entry-weekly {
+  background: #fffaf2;
+}
+.weekly-badge {
+  flex-shrink: 0;
+  background: #ff6600;
+  color: #fff;
+  font-size: 7pt;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  padding: 1px 4px;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+.entry-weekly .entry-link {
+  font-weight: bold;
+}
+

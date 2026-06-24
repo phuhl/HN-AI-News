@@ -30,13 +30,23 @@ layout: null
 
 <div class="section-header">Daily AI digests &mdash; latest first</div>
 
+{% comment %} weekly-aware archive list — weekly digests stay inline (one chronological list, so the dailies are still easy to scroll to) but carry a badge + distinct label so they stand out {% endcomment %}
 {% assign sorted_posts = site.posts | sort: 'date' | reverse %}
 {% for post in sorted_posts %}
+{% if post.digest_type == 'weekly' %}
+<div class="entry entry-weekly">
+  <span class="entry-rank">{{ forloop.index }}.</span>
+  <span class="weekly-badge">WEEK</span>
+  <a class="entry-link" href="{{ post.url | relative_url }}">Weekly Digest &mdash; {{ post.readable_date }}</a>
+  <span class="entry-meta">top {{ post.ai_posts }} stories</span>
+</div>
+{% else %}
 <div class="entry">
   <span class="entry-rank">{{ forloop.index }}.</span>
   <a class="entry-link" href="{{ post.url | relative_url }}">AI News &mdash; {{ post.readable_date }}</a>
   <span class="entry-meta">{{ post.ai_posts }} posts</span>
 </div>
+{% endif %}
 {% endfor %}
 
 </div>
